@@ -7,7 +7,7 @@
 
 ---
 
-## 📝 Descripción del Proyecto
+## Descripción del Proyecto
 
 **QuickStay** es una solución integral de infraestructura y software diseñada para revolucionar el alquiler de espacios por horas. Este repositorio contiene toda la documentación técnica, planes de implementación, diseños de red y protocolos de seguridad necesarios para desplegar una plataforma de alta disponibilidad, segura y escalable.
 
