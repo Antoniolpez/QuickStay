@@ -1,9 +1,9 @@
-# 🏨 QuickStay: Plataforma de Alquiler Express
+# QuickStay: Plataforma de Alquiler Express
 
 > **Proyecto Integrado - 2º ASIR**  
 > **Autor:** Antonio López Montes  
-> **Institución:** IES [Nombre del Centro]  
-> **Estado:** `FINALIZADO` 🚀
+> **Institución:** IES Medina Azahara
+> **Estado:** `FINALIZADO`
 
 ---
 
@@ -13,7 +13,7 @@
 
 ---
 
-## 📊 Estructura del Repositorio por Fases
+## Estructura del Repositorio por Fases
 
 Navega por las diferentes etapas del proyecto a través de los documentos oficiales:
 
@@ -27,26 +27,26 @@ Navega por las diferentes etapas del proyecto a través de los documentos oficia
 
 ---
 
-## 🗺️ Mapa de Navegación Temática
+## Mapa de Navegación Temática
 
 Si buscas un área técnica específica, utiliza estos accesos directos:
 
-### 🌐 Redes y Conectividad
+### Redes y Conectividad
 *   [**Arquitectura de Red**](./Fase%202/3.-%20Guía%20de%20Implementación%20de%20Red%20Avanzada.md): Configuración de VLANs, Firewall y Routing.
 *   [**Servicios de Infraestructura**](./Fase%202/4.-%20Guía%20de%20Implementación%20de%20Servicios%20Base.md): AD-DC, DNS, DHCP y NTP.
 
-### ⚙️ Capas de Servicio
+### Capas de Servicio
 *   [**Alta Disponibilidad Web**](./Fase%203/5.-%20Guía%20de%20Implementación%20de%20Capa%20Web%20Redundante.md): Balanceo de carga y servidores redundantes.
 *   [**Backend y Datos**](./Fase%203/6.-%20Guía%20de%20Implementación%20de%20Servidores%20de%20Aplicación%20y%20Base%20de%20Datos.md): Clustering de App y Replicación MySQL.
 *   [**Ecosistema IoT**](./Fase%203/7.-%20Guía%20de%20Implementación%20de%20IoT,%20Monitoreo%20y%20Seguridad.md): MQTT y monitorización centralizada.
 
-### 🛡️ Seguridad y Mantenimiento
+### Seguridad y Mantenimiento
 *   [**Protección de Datos**](./Fase%204/8.-%20Guía%20de%20Implementación%20de%20Backup%20y%20Recuperación.md): Estrategia Veeam y recuperación ante desastres.
 *   [**Validación de Sistemas**](./Fase%205/10.-%20Guía%20de%20Pruebas%20Finales.md): Pruebas funcionales, de seguridad y estrés.
 
 ---
 
-## 🛠️ Stack Tecnológico
+## Stack Tecnológico
 
 <p align="left">
   <img src="https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black" />
@@ -60,7 +60,7 @@ Si buscas un área técnica específica, utiliza estos accesos directos:
 
 ---
 
-## 📂 Estructura Física del Repositorio
+## Estructura Física del Repositorio
 
 ```text
 .
@@ -73,4 +73,4 @@ Si buscas un área técnica específica, utiliza estos accesos directos:
 ```
 
 ---
-© 2025 Antonio López Montes - Proyecto QuickStay
+© 2025/2026 Antonio López Montes - Proyecto QuickStay
