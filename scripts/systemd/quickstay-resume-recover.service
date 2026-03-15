@@ -1,0 +1,14 @@
+[Unit]
+Description=QuickStay network recovery after suspend/resume
+After=docker.service network-online.target suspend.target
+Wants=docker.service network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/jefe/quickstay
+ExecStart=/home/jefe/quickstay/recover-after-resume.sh
+
+[Install]
+WantedBy=suspend.target
+WantedBy=hibernate.target
+WantedBy=hybrid-sleep.target

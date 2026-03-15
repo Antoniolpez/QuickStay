@@ -1,0 +1,5 @@
+Ejecutamos Set-Service -Name ssh-agent -StartupType 'Automatic'
+Ejecutamos Set-Service -Name sshd -StartupType 'Automatic'
+Ejecutamos Get-Service ssh* | Start-Service
+
+

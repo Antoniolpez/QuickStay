@@ -1,0 +1,106 @@
+/* Estilos generales */
+.root {
+    -fx-background-color: #242424;
+}
+
+BorderPane {
+    -fx-background-color: #000000;
+}
+
+Button {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #000000;
+    -fx-font-size: 14px;
+}
+
+Button:hover {
+    -fx-background-color: red;
+}
+
+#buttonactualizar:hover{
+-fx-background-color: #2ACFFF; /*azul*/
+}
+
+/* Estilos para el VBox del menú lateral izquierdo */
+#menuLateral {
+    -fx-background-color: #225F5C;
+    -fx-spacing: 20;
+}
+
+/* Estilos para los botones del menú lateral */
+#menuLateral Button {
+    -fx-text-fill: #ffffff;
+    -fx-background-color: transparent;
+    -fx-text-alignment: left;
+    -fx-font-size: 12px;
+    -fx-start-margin: 1;
+    -fx-end-margin: 8;
+}
+
+#menuLateral Button:focused {
+    -fx-background-color: #225F5C;
+}
+
+/* Estilos para los botones del menú lateral al pasar el ratón por encima */
+#menuLateral Button:hover {
+    -fx-background-color: #225F5C;
+}
+
+/* Estilos para el VBox que contiene los paneles de ajustes */
+#settingsPanel {
+    -fx-background-color: #225F5C;
+    -fx-spacing: 10;
+}
+Label{
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 12px;
+}
+CheckBox{
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 12px;
+}
+
+/* Estilos para los paneles de ajustes */
+.settingsPanel {
+    -fx-background-color: #225F5C;
+}
+
+/* Estilos para las etiquetas de título de los paneles de ajustes */
+.settingsPanel .titleLabel {
+    -fx-text-fill: #92DCD8;
+    -fx-font-size: 15;
+}
+.titleLabel {
+    -fx-text-fill: #92DCD8;
+}
+
+/* Estilos para las imágenes de cerrar los paneles de ajustes */
+.settingsPanel .closeIcon {
+    -fx-opacity: 0.7;
+}
+
+/* Estilos para las imágenes de cerrar los paneles de ajustes al pasar el ratón por encima */
+.settingsPanel .closeIcon:hover {
+    -fx-opacity: 1.0;
+}
+
+/* Estilos para los campos de texto */
+.text-field {
+    -fx-background-color: #92DCD8, #92DCD8, #92DCD8, #92DCD8;
+    -fx-prompt-text-fill: #379F99;
+    -fx-background-insets: 0, 1, 2, 3;
+    -fx-background-radius: 3, 2, 2, 2;
+    -fx-text-fill: #000000;
+}
+
+/* Estilos para los campos de contraseña */
+.password-field {
+    -fx-background-color: #92DCD8, #92DCD8, #92DCD8, #92DCD8;
+    -fx-background-insets: 0, 1, 2, 3;
+    -fx-background-radius: 3, 2, 2, 2;
+    -fx-text-fill: #000000;
+}
+
+#cerrarPrincipal:hover{
+    -fx-background-color: red;
+}

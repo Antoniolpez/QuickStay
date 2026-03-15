@@ -1,0 +1,78 @@
+.step-label {
+    -fx-padding: 10;
+    -fx-border-color: #225F5C; /* Cambia el color del borde para que coincida con el color del texto del text-field */
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-text-fill: #225F5C; /* Cambia el color del texto para que coincida con el color del texto del text-field */
+    -fx-background-color: #92DCD8; /* Cambia el color de fondo para que coincida con el color de fondo del text-field */
+}
+
+.text-field {
+    -fx-background-color: #92DCD8;
+    -fx-text-fill: #225F5C;
+    -fx-prompt-text-fill: #379F99;
+}
+
+.label-style {
+    -fx-text-fill: #ffffff;
+}
+
+.button-style {
+    -fx-background-color: #93bbb2;
+    -fx-background-radius: 3;
+    -fx-text-fill: #225F5C;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 0);
+}
+.button-style:hover {
+    -fx-background-color: #bdd7cc;
+    -fx-text-fill: #225F5C;
+}
+
+.button-style:disabled {
+    -fx-background-color: #225F5C;
+    -fx-text-fill: #ffffff;
+}
+
+.button-style:disabled:hover {
+    -fx-background-color: #379F99;
+}
+
+#mainPane{
+    -fx-background-color: #225F5C;
+}
+
+#guardarCheckBox{
+    -fx-text-fill: #ffffff;
+}
+
+combo-box-popup .list-cell {
+    -fx-text-fill: #225F5C;
+    -fx-background-color: #92DCD8; /* Asegúrate de que el fondo de las celdas también esté oscuro */
+
+}
+
+.combo-box-base {
+    -fx-text-fill: #225F5C;
+
+}
+
+.combo-box {
+    -fx-background-color: #92DCD8; /* Fondo del ComboBox */
+    -fx-text-fill: #225F5C; /* Color del texto */
+
+}
+
+.combo-box .list-cell {
+    -fx-background-color: #92DCD8; /* Fondo de las celdas */
+    -fx-text-fill: #225F5C; /* Color del texto de las celdas */
+
+}
+
+.combo-box .combo-box-popup {
+    -fx-background-color: #92DCD8; /* Fondo del popup */
+    -fx-text-fill: #225F5C; /* Color del texto del popup */
+
+}

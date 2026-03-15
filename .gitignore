@@ -1,0 +1,70 @@
+# ==============================
+# QuickStay - Git Ignore Policy
+# Objetivo: subir solo codigo de produccion y documentacion util.
+# ==============================
+
+# IA / Copilot customization (no necesario en produccion)
+.github/agents/
+.github/instructions/
+.github/prompts/
+.github/skills/
+
+# VS Code / local AI tooling
+.vscode/
+.copilot/
+
+# Sensitive files
+secrets.env
+
+# Runtime and generated state
+logs/
+data/
+backups/
+deploy_output.log
+
+# Generated or sensitive access material
+ssh/keys/
+wireguard/keys/
+wireguard/config/peer_admin*/
+wireguard/config/wg_confs/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Logs
+logs/
+*.log
+
+# Claves y secretos
+secrets.env
+security/wireguard/keys/
+security/ssh/keys/
+security/wireguard/config/server_private.key
+security/wireguard/config/server_public.key
+
+# Compilados Java
+services/app/target/
+services/app/.idea/
+**/__pycache__/
+**/*.pyc
+
+# Datos runtime
+data/
+backups/
+
+# Claves WireGuard (ruta raíz)
+wireguard/config/server/
+wireguard/config/peer_admin1/
+wireguard/config/peer_admin2/
+wireguard/config/peer_admin3/
+wireguard/config/wg_confs/
+wireguard/keys/
+ssh/keys/
+
+# Secrets raíz
+.env
+secrets.env

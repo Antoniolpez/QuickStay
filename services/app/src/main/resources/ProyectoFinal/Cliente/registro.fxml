@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane styleClass="root-pane" stylesheets="@registro.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ProyectoFinal.Cliente.Controladores.Registro">
+    <HBox layoutX="120.0" layoutY="69.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <children>
+         <ImageView fitHeight="615.0" fitWidth="443.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+               <Image url="@../imgs/registro.png" />
+            </image>
+         </ImageView>
+          <VBox alignment="CENTER" spacing="20">
+              <Label id="header-label" text="Registro de Usuario" />
+              <StackPane>
+                  <ImageView fx:id="profilePicView" fitHeight="100" fitWidth="100.0" onMouseClicked="#handleUploadButtonAction" preserveRatio="true" styleClass="profile-pic">
+                      <image>
+                          <Image url="@../imgs/redondo.png" />
+                      </image>
+                  </ImageView>
+                  <Label fx:id="overlay" text="Añadir foto" />
+              </StackPane>
+      
+              <GridPane alignment="CENTER" hgap="10" vgap="10">
+                  <padding>
+                      <Insets bottom="25" left="25" right="25" top="25" />
+                  </padding>
+      
+                  <Label styleClass="form-label" text="Usuario:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                  <TextField fx:id="userTextField" onMouseClicked="#limpiarStyle" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+      
+                  <Label styleClass="form-label" text="Nombre (Alias):" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                  <TextField fx:id="aliasTextField" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      
+                  <Label styleClass="form-label" text="Apellidos:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                  <TextField fx:id="apellidoTextField" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      
+                  <Label styleClass="form-label" text="Contraseña:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                  <PasswordField fx:id="pwBox" onMouseClicked="#limpiarStyle" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      
+                  <Label styleClass="form-label" text="Repite la Contraseña:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                  <PasswordField fx:id="pwBoxRep" onMouseClicked="#limpiarStyle" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+      
+                  <Label styleClass="form-label" text="Fecha de Nacimiento:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                  <DatePicker fx:id="fechaNacimientoField" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+      
+                  <Label styleClass="form-label" text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                  <TextField fx:id="emailTextField" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+      
+                  <Label styleClass="form-label" text="Número de Teléfono:" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                  <TextField fx:id="numTelefonoTextField" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+      
+                  <HBox alignment="BOTTOM_RIGHT" spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="9">
+                      <Button onAction="#handleRegisterButtonAction" styleClass="register-button" text="Registrar" />
+                  </HBox>
+               <Button mnemonicParsing="false" onAction="#iniciarSesion" text="Volver" GridPane.rowIndex="9" />
+               <columnConstraints>
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
+              </GridPane>
+            <Label fx:id="errorLabel" text="Label" textFill="#e70808" />
+          </VBox>
+      </children>
+   </HBox>
+</AnchorPane>

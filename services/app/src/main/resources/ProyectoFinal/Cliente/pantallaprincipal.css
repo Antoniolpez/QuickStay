@@ -1,0 +1,211 @@
+#buscadorPropiedades{
+    -fx-background-color: #2B7874; /* Color principal */
+}
+
+.hboxDentro{
+    -fx-background-color: #2B7874; /* Color principal */
+    -fx-padding: 5px;
+}
+
+.hbox {
+    -fx-background-color: #225F5C;
+    display: flex;
+    justify-content: space-between;
+    overflow: auto;
+    -fx-min-width: 100px;
+    -fx-min-height: 27px;
+}
+.hbox Label {
+    -fx-text-fill: #ffffff;
+}
+
+.labelBuscador{
+    -fx-text-fill: #ffffff;
+}
+
+#listaContactos{
+    -fx-background-color: #379F99; /* Color principal */
+    -fx-text-fill: black;
+    -fx-control-inner-background: #379F99;
+}
+
+#listaContactos .list-cell:selected {
+    -fx-text-fill: black;
+    -fx-background-color: #92DCD8;
+}
+
+#chatEnterovbox{
+    -fx-background-color: #4DB6AC; /* Color principal */
+}
+
+#labelnombreUsuario{
+    -fx-text-fill: #ffffff;
+}
+
+/* Estilo para el panel de desplazamiento */
+.scroll-pane {
+    -fx-background-color: #2B7874; /* Color principal */
+}
+
+/* Estilo para el contenido del panel de desplazamiento */
+.scroll-pane .viewport {
+    -fx-background-color: #2B7874; /* Color principal */
+}
+
+/* Estilo para las barras de desplazamiento */
+.scroll-pane .scroll-bar:vertical,
+.scroll-pane .scroll-bar:horizontal {
+    -fx-background-color: #2B7874;
+}
+/* Estilo para la barra de desplazamiento cuando está en estado normal */
+.scroll-pane .scroll-bar:vertical {
+    -fx-background-color: #2B7874; /* Cambia el color de fondo */
+    -fx-background-insets: 0; /* Elimina los márgenes internos */
+}
+
+/* Estilo para la barra de desplazamiento cuando está siendo arrastrada */
+.scroll-pane .scroll-bar:vertical:pressed {
+    -fx-background-color: #2B7874; /* Cambia el color de fondo cuando está siendo presionada */
+}
+
+/* Estilo para la barra de desplazamiento cuando está en estado normal */
+.scroll-pane .scroll-bar:horizontal {
+    -fx-background-color: #2B7874; /* Cambia el color de fondo */
+    -fx-background-insets: 0; /* Elimina los márgenes internos */
+}
+
+/* Estilo para la barra de desplazamiento cuando está siendo arrastrada */
+.scroll-pane .scroll-bar:horizontal:pressed {
+    -fx-background-color: #2B7874; /* Cambia el color de fondo cuando está siendo presionada */
+}
+
+/* pantallaprincipal.css */
+#pantallaPrincipal{
+     -fx-background-color: #2B7874;
+}
+
+/* Estilos para el panel izquierdo */
+#left {
+    -fx-background-color: #2B7874;
+}
+
+#left Button {
+    -fx-text-fill: #ffffff;
+    -fx-background-color: transparent;
+    -fx-text-alignment: left;
+}
+
+#left Button:hover {
+    -fx-background-color: #4DB6AC; /* Gris oscuro cuando el mouse está encima */
+}
+
+.text-area-style {
+    -fx-control-inner-background: #92DCD8;
+    -fx-text-fill: #225F5C;
+    -fx-border-color: #379F99;
+    -fx-border-radius: 5;
+}
+
+#configLoginImg {
+    -fx-fit-height: 30.0;
+    -fx-fit-width: 30.0;
+}
+
+/* Estilos para el panel central */
+#center {
+    -fx-background-color: #225F5C; /* Color principal */
+}
+
+#panelAgregarPropiedad {
+    -fx-background-color: #379F99; /* Color principal */
+}
+
+.labelPanelPropiedad{
+    color: white; /* Color del texto */
+    font-weight: bold; /* Texto en negrita */
+    -fx-font-size: 20px;
+}
+
+#allHousesList, #userHousesList {
+    -fx-background-color: #379F99; /* Color principal */
+    -fx-text-fill: black;
+    -fx-control-inner-background: #379F99;
+}
+
+#allHousesList .scroll-bar:vertical .thumb {
+    -fx-background-color: #92DCD8; /* Cambia el color de fondo del thumb */
+}
+
+#allHousesList .scroll-bar:vertical .track {
+    -fx-background-color: #379F99; /* Cambia el color de fondo del track */
+}
+
+
+#allHousesList .list-cell:selected, #userHousesList .list-cell:selected  {
+    -fx-background-color: #92DCD8;
+}
+
+
+.text-field {
+    -fx-background-color: #92DCD8;
+    -fx-text-fill: #000000;
+    -fx-prompt-text-fill: #379F99;
+}
+
+#fotosHBox {
+    -fx-background-color: #92DCD8; /* Un tono de fondo más claro */
+    -fx-border-color: #379F99; /* Color del borde */
+    -fx-text-fill: #000000; /* Color del texto */
+    -fx-border-width: 2px; /* Ancho del borde */
+    -fx-border-radius: 5px; /* Radio del borde para hacerlo ligeramente redondeado */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 10, 0, 0, 0); /* Sombra para hacer que parezca que sobresale */
+}
+
+
+
+#errorMaxFotLabel {
+    -fx-text-fill: #ffffff;
+}
+
+
+#addHouseButton {
+    -fx-background-color: #93bbb2;
+    -fx-background-radius: 3;
+    -fx-text-fill: #225F5C;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 0);
+}
+
+#addHouseButton:hover {
+    -fx-background-color: #bdd7cc;
+    -fx-text-fill: #225F5C;
+}
+
+/* Estilos para el panel inferior */
+#bottom {
+    -fx-background-color: #225F5C; /* Color principal */
+}
+
+#progressBarAll {
+    -fx-accent: #000000; /* Color principal */
+}
+
+#chatContactName{
+    -fx-text-fill: black;
+    -fx-font-size: 16px;
+}
+
+#estadoChat{
+    -fx-text-fill: black;
+    -fx-font-size: 12px;
+}
+
+#cerrarPrincipal{
+    -fx-background-color: transparent;
+    -fx-transition: background-color 1.0s ease-in-out;
+}
+#cerrarPrincipal:hover{
+    -fx-background-color: red;
+}
+

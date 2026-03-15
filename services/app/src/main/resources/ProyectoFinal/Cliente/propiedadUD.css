@@ -1,0 +1,59 @@
+/* Fondo blanco y letras negras para los TextField */
+.text-field {
+    -fx-background-color: #92DCD8;
+    -fx-text-fill: #000000;
+    -fx-prompt-text-fill: #379F99;
+}
+
+/* Fondo blanco y letras negras para los TextArea */
+.text-area-style {
+    -fx-control-inner-background: #92DCD8;
+    -fx-text-fill: #225F5C;
+    -fx-border-color: #379F99;
+    -fx-border-radius: 5;
+}
+
+/* Botones con fondo blanco y letras negras */
+.button {
+    -fx-background-color: #93bbb2;
+    -fx-background-radius: 3;
+    -fx-text-fill: #225F5C;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 0);
+}
+
+.button:hover {
+    -fx-background-color: #bdd7cc;
+    -fx-text-fill: #225F5C;
+}
+
+#fotosHBox {
+    -fx-background-color: #92DCD8; /* Un tono de fondo más claro */
+    -fx-border-color: #379F99; /* Color del borde */
+    -fx-text-fill: #000000; /* Color del texto */
+    -fx-border-width: 2px; /* Ancho del borde */
+    -fx-border-radius: 5px; /* Radio del borde para hacerlo ligeramente redondeado */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 10, 0, 0, 0); /* Sombra para hacer que parezca que sobresale */
+}
+
+
+#removeHouseButton {
+    -fx-background-color: red;
+    -fx-text-fill: #225F5C;
+}
+
+#removeHouseButton:hover {
+    -fx-background-color: #FF6161;
+    -fx-text-fill: #225F5C;
+}
+
+
+#houseDescription{
+    -fx-text-fill: #000000;
+}
+
+#houseDescription .content {
+    -fx-background-color: #92DCD8;
+    -fx-text-fill: #000000;
+}

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="477.0" prefWidth="871.0" stylesheets="@settings.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ProyectoFinal.Cliente.Controladores.Settings">
+    <Pane fx:id="focusKiller" />
+
+    <center>
+        <AnchorPane prefHeight="600.0" prefWidth="638.0">
+            <VBox id="settingsPanel" fx:id="userSettingsPanel" layoutX="20.0" layoutY="13.0" prefHeight="581.0" prefWidth="847.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="13.0">
+                <AnchorPane prefHeight="24.0" prefWidth="609.0" styleClass="settingsPanel">
+                    <Label alignment="TOP_CENTER" contentDisplay="CENTER" prefHeight="25.0" prefWidth="609.0" styleClass="titleLabel" text="Ajustes de Usuario" textAlignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                    <ImageView fitHeight="30.0" fitWidth="30.0" onMouseClicked="#settingsHide" onMouseEntered="#mouseEntered" onMouseExited="#mouseExited" pickOnBounds="true" AnchorPane.rightAnchor="0.0">
+                        <Image url="@../imgs/salir.png" />
+                    </ImageView>
+
+                    <padding>
+                        <Insets right="10.0" top="5.0" />
+                    </padding>
+
+                </AnchorPane>
+
+                <VBox alignment="CENTER" spacing="20.0">
+                    <ImageView fitHeight="150.0" fitWidth="150.0" preserveRatio="true">
+                        <Image url="@../imgs/logo.png" />
+                    </ImageView>
+                    <HBox alignment="CENTER" spacing="50.0">
+                        <!-- ImageView Section with Background -->
+
+                        <StackPane alignment="CENTER">
+
+                            <VBox alignment="CENTER" spacing="10.0">
+                                <ImageView fx:id="fotoPerfil" fitHeight="106.0" fitWidth="108.0" />
+                            </VBox>
+                        </StackPane>
+                    </HBox>
+
+                    <!-- Editar Perfil y Cambiar Contraseña Section -->
+                    <GridPane alignment="CENTER" hgap="50" vgap="20">
+                        <!-- Editar Perfil Section -->
+                        <VBox spacing="10.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label style="-fx-font-size: 20px;" styleClass="subtitleLabel" text="Editar Perfil">
+                                <font>
+                                    <Font size="20.0" />
+                                </font>
+                            </Label>
+                            <GridPane hgap="10" vgap="10">
+                                <Label styleClass="titleLabel" text="Apodo de Usuario" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <TextField fx:id="usernameField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                                <Label styleClass="titleLabel" text="Apellidos de Usuario" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <TextField fx:id="surnameField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                                <Label styleClass="titleLabel" text="Email de Usuario" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                <TextField fx:id="emailField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                                <Label styleClass="titleLabel" text="Número de teléfono" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                <TextField fx:id="phoneField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                                <columnConstraints>
+                                    <ColumnConstraints />
+                                    <ColumnConstraints />
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                </rowConstraints>
+                            </GridPane>
+                        </VBox>
+
+                        <!-- Cambiar Contraseña Section -->
+                        <VBox spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label style="-fx-font-size: 20px;" styleClass="subtitleLabel" text="Cambiar Contraseña">
+                                <font>
+                                    <Font size="20.0" />
+                                </font>
+                            </Label>
+                            <GridPane hgap="10" vgap="10">
+                                <Label styleClass="titleLabel" text="Contraseña actual" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <PasswordField fx:id="passwordField" prefWidth="200.0" promptText="Introduce tu contraseña actual" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                                <Label styleClass="titleLabel" text="Nueva Contraseña" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <PasswordField fx:id="newPasswordField" prefWidth="200.0" promptText="Introduce tu nueva contraseña" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                                <Label styleClass="titleLabel" text="Confirmar Contraseña" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                <PasswordField fx:id="confirmPasswordField" prefWidth="200.0" promptText="Confirma la contraseña" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                                <columnConstraints>
+                                    <ColumnConstraints />
+                                    <ColumnConstraints />
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                </rowConstraints>
+                            </GridPane>
+                        </VBox>
+                  <columnConstraints>
+                     <ColumnConstraints />
+                     <ColumnConstraints />
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints />
+                  </rowConstraints>
+                    </GridPane>
+               <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                  <children>
+                     <Button mnemonicParsing="false" onMouseClicked="#actualizarUsuario" text="Actualizar perfil" />
+                  </children>
+               </HBox>
+                </VBox>
+
+                <VBox alignment="CENTER" prefHeight="368.0" prefWidth="283.0" spacing="10.0">
+                    <HBox alignment="BOTTOM_CENTER" spacing="10.0" VBox.vgrow="ALWAYS">
+                        <Button alignment="CENTER" mnemonicParsing="false" onAction="#cerrarSesion" text="Cerrar sesión" />
+                        <Button alignment="CENTER" mnemonicParsing="false" onAction="#eliminarCuenta" text="Eliminar cuenta" />
+                        <VBox.margin>
+                            <Insets bottom="10.0" />
+                        </VBox.margin>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </AnchorPane>
+    </center>
+
+    <top>
+        <HBox id="top" alignment="CENTER_RIGHT" minHeight="30.0" minWidth="91.0" spacing="20" styleClass="hbox">
+            <HBox id="barraTopMove" alignment="CENTER_LEFT" minHeight="0.0" minWidth="10.0" prefHeight="30.4" prefWidth="688.0" HBox.hgrow="ALWAYS">
+                <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                    <Image url="@../imgs/logo.png" />
+                    <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" top="5.0" />
+                    </HBox.margin>
+                </ImageView>
+            </HBox>
+            <HBox alignment="CENTER" minHeight="30.0" minWidth="91.0" prefHeight="30.0" prefWidth="91.0">
+                <ImageView fitHeight="30.0" fitWidth="30.0" onMouseClicked="#minimizar" onMouseEntered="#mouseEntered" onMouseExited="#mouseExited" pickOnBounds="true">
+                    <Image url="@../imgs/minimize.png" />
+                </ImageView>
+                <ImageView fitHeight="24.0" fitWidth="24.0" onMouseClicked="#maximizar" onMouseEntered="#mouseEntered" onMouseExited="#mouseExited" pickOnBounds="true">
+                    <Image url="@../imgs/maximize.png" />
+                </ImageView>
+                <HBox id="cerrarPrincipal">
+                    <ImageView fitHeight="30.0" fitWidth="30.0" onMouseClicked="#systemExit" onMouseEntered="#mouseEntered" onMouseExited="#mouseExited" pickOnBounds="true">
+                        <Image url="@../imgs/salir.png" />
+                    </ImageView>
+                </HBox>
+            </HBox>
+        </HBox>
+    </top>
+</BorderPane>

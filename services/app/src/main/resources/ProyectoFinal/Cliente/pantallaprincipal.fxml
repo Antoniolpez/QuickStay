@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.embed.swing.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="pantallaPrincipal" minHeight="30.0" minWidth="91.0" prefHeight="653.0" prefWidth="962.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ProyectoFinal.Cliente.Controladores.Principal">
+    <stylesheets>
+        <URL value="@pantallaprincipal.css" />
+    </stylesheets>
+    <left>
+        <VBox id="left" prefHeight="582.0" prefWidth="147.0" spacing="10.0">
+            <HBox fx:id="settingsHbox" alignment="CENTER_LEFT" onMouseEntered="#mouseEntered" onMouseExited="#mouseExited">
+                <ImageView fx:id="configLoginImg" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true">
+                    <Image url="@../imgs/settings.png" />
+                    <HBox.margin>
+                        <Insets left="2.0" />
+                    </HBox.margin>
+                </ImageView>
+                <Label fx:id="labelnombreUsuario">
+                    <HBox.margin>
+                        <Insets left="5.0" />
+                    </HBox.margin>
+                </Label>
+            </HBox>
+            <Button fx:id="mostrarPropiedadesBt" onAction="#mostrarPropiedades" text="Todas las propiedades" />
+            <Button fx:id="mostrarMisPropiedadesBt" onAction="#mostrarMisPropiedades" text="Mis propiedades" />
+            <Button fx:id="mostrarInsertarPropiedadBt" onAction="#mostrarInsertarPropiedad" text="Agregar propiedad" />
+            <Button fx:id="mostrarMapaBt" onAction="#mostrarMapa" text="Mapa" />
+            <Button fx:id="mostrarChatBt" onAction="#mostrarChat" text="Chats" />
+        </VBox>
+    </left>
+    <top>
+        <HBox id="top" fx:id="top" alignment="CENTER_RIGHT" minHeight="30.0" minWidth="91.0" spacing="20" styleClass="hbox">
+            <HBox id="barraTopMove" fx:id="topleft" alignment="CENTER_LEFT" minHeight="30.4" minWidth="10.0" prefHeight="30.4" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                    <Image url="@../imgs/logo.png" />
+                    <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                    </HBox.margin>
+                </ImageView>
+            </HBox>
+            <HBox alignment="CENTER" minHeight="30.0" minWidth="91.0" prefHeight="30.0" prefWidth="91.0">
+                <ImageView fitHeight="30.0" fitWidth="30.0" onMouseClicked="#minimizar" onMouseEntered="#mouseEntered" onMouseExited="#mouseExited" pickOnBounds="true">
+                    <Image url="@../imgs/minimize.png" />
+                </ImageView>
+                <ImageView fitHeight="24.0" fitWidth="24.0" onMouseClicked="#maximizar" onMouseEntered="#mouseEntered" onMouseExited="#mouseExited" pickOnBounds="true">
+                    <Image url="@../imgs/maximize.png" />
+                </ImageView>
+                <HBox id="cerrarPrincipal">
+                <ImageView fitHeight="30.0" fitWidth="30.0" onMouseClicked="#systemExit" onMouseEntered="#mouseEntered" onMouseExited="#mouseExited" pickOnBounds="true">
+                    <Image url="@../imgs/salir.png" />
+                </ImageView>
+                </HBox>
+            </HBox>
+        </HBox>
+    </top>
+    <center>
+        <AnchorPane minHeight="20.0" minWidth="20.0">
+            <BorderPane fx:id="allHousesListAnchorPane" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <top>
+                    <HBox fx:id="buscadorPropiedades" alignment="CENTER_LEFT" fillHeight="false" spacing="10.0">
+                        <padding>
+                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                        </padding>
+                        <Label styleClass="labelBuscador" text="Ubicación:" />
+                        <TextField fx:id="ubicacionField" promptText="Comunidad, provincia..." HBox.hgrow="ALWAYS" />
+                        <Label styleClass="labelBuscador" text="Dueño:" />
+                        <TextField fx:id="hostField" HBox.hgrow="ALWAYS" />
+                    </HBox>
+                </top>
+                <center>
+                <ScrollPane id="allHousesListscroll" fx:id="allHousesListscroll" fitToHeight="true" fitToWidth="true" layoutY="40.0" prefHeight="556.0" prefWidth="809.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
+                    <ListView fx:id="allHousesList" />
+                </ScrollPane>
+                </center>
+            </BorderPane>
+            <BorderPane fx:id="userHousesListAnchorPane" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <center>
+                    <HBox fx:id="hboxMisPropiedades">
+                        <ScrollPane fx:id="userHousesListscroll" fitToHeight="true" fitToWidth="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" HBox.hgrow="ALWAYS">
+                            <ListView fx:id="userHousesList" />
+                        </ScrollPane>
+                    </HBox>
+                </center>
+            </BorderPane>
+            <AnchorPane id="panelAgregarPropiedad" fx:id="panelAgregarPropiedad" prefHeight="400.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <HBox alignment="CENTER" minHeight="20.0" minWidth="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <VBox alignment="TOP_CENTER" minHeight="20.0" minWidth="20.0" spacing="20.0" HBox.hgrow="ALWAYS">
+                        <Label prefHeight="29.0" prefWidth="173.0" styleClass="labelPanelPropiedad" text="Agregar propiedad" textFill="BLACK" />
+
+                        <GridPane alignment="CENTER" hgap="20" vgap="20">
+                            <Label text="Nombre:" textFill="BLACK" />
+                            <TextField fx:id="houseName" onKeyReleased="#resetBorder" promptText="Nombre (Ejem: Casa de playa)" GridPane.columnIndex="1" />
+
+                            <Label text="Dirección:" textFill="BLACK" GridPane.rowIndex="1" />
+                            <TextField fx:id="houseAddress" onKeyReleased="#resetBorder" promptText="Dirección" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                            <Label text="Pedanía:" textFill="BLACK" GridPane.rowIndex="2" />
+                            <TextField fx:id="pedaniaField" onKeyReleased="#resetBorder" promptText="Pedanía (Si procede)" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                            <Label text="Localidad:" textFill="BLACK" GridPane.rowIndex="3" />
+                            <TextField fx:id="localidadField" onKeyReleased="#resetBorder" promptText="Localidad" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                            <Label text="Provincia:" textFill="BLACK" GridPane.rowIndex="4" />
+                            <TextField fx:id="houseAddressProvincia" onKeyReleased="#resetBorder" promptText="Provincia" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+                            <Label text="Comunidad:" textFill="BLACK" GridPane.rowIndex="5" />
+                            <TextField fx:id="comunidadesField" onKeyReleased="#resetBorder" promptText="Comunidad" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+
+                            <Label text="Código Postal:" textFill="BLACK" GridPane.rowIndex="6" />
+                            <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                                <TextField fx:id="prefijoCodPost" prefWidth="50" promptText="Prefijo" />
+                                <TextField fx:id="codPost" onKeyReleased="#resetBorder" prefWidth="100" promptText="Código Postal" />
+                            </HBox>
+
+                            <Label text="Descripción:" textFill="BLACK" GridPane.rowIndex="7" />
+                            <TextArea fx:id="houseDescription" onKeyReleased="#resetBorder" prefHeight="62.0" promptText="Descripción" styleClass="text-area-style" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+
+                            <Label text="Tipo:" textFill="BLACK" GridPane.rowIndex="8" />
+                            <TextField fx:id="houseTipo" onKeyReleased="#resetBorder" promptText="Tipo" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+
+                            <Label text="Agregar fotos:" textFill="BLACK" GridPane.rowIndex="9" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS" />
+                            <ScrollPane fitToHeight="true" fitToWidth="true" minHeight="50.0" prefHeight="120.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="9" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                <HBox fx:id="fotosHBox" alignment="CENTER" spacing="10" />
+                            </ScrollPane>
+                     <Label layoutX="29.0" layoutY="392.0" text="Precio hora:" textFill="BLACK" GridPane.rowIndex="10" />
+                     <TextField fx:id="houseTipo1" layoutX="126.0" layoutY="388.0" onKeyReleased="#resetBorder" promptText="Cantidad en euros" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                            <columnConstraints>
+                                <ColumnConstraints />
+                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="300.0" minWidth="100.0" prefWidth="300.0" />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints />
+                                <RowConstraints />
+                                <RowConstraints />
+                                <RowConstraints />
+                                <RowConstraints />
+                                <RowConstraints />
+                                <RowConstraints />
+                                <RowConstraints />
+                                <RowConstraints />
+                                <RowConstraints />
+                                <RowConstraints />
+                            </rowConstraints>
+                        </GridPane>
+
+                        <Label fx:id="errorMaxFotLabel" textFill="RED" />
+                        <Button fx:id="addHouseButton" alignment="CENTER" onAction="#addPropiedad" styleClass="btn-primary" text="Agregar" />
+                        <padding>
+                            <Insets bottom="20.0" right="20.0" top="20.0" />
+                        </padding>
+                    </VBox>
+                    <AnchorPane fx:id="contenedorMapaAdd" minHeight="10.0" minWidth="10.0" prefHeight="569.0" prefWidth="294.0" HBox.hgrow="ALWAYS">
+                        <SwingNode fx:id="mapaSwingNodeAdd" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <HBox.margin>
+                            <Insets bottom="20.0" right="20.0" top="20.0" />
+                        </HBox.margin>
+                    </AnchorPane>
+                </HBox>
+            </AnchorPane>
+
+            <AnchorPane fx:id="contenedorMapa" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <SwingNode fx:id="mapaSwingNode" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            </AnchorPane>
+
+            <AnchorPane fx:id="contenedorChat" style="-fx-background-color: #92DCD8" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <!-- Top bar with search -->
+                    <HBox alignment="CENTER_LEFT" spacing="10" styleClass="hboxDentro">
+                        <Label text="Buscar contacto:" textFill="WHITE" />
+                        <TextField fx:id="buscarContactoField" promptText="Buscar..." />
+                  <Label layoutX="20.0" layoutY="20.0" text="Agregar contacto:" textFill="WHITE" />
+                  <TextField fx:id="agregarContactoField" layoutX="126.0" layoutY="20.0" promptText="Buscar..." />
+                  <Label layoutX="286.0" layoutY="20.0" text="Eliminar contacto:" textFill="WHITE" />
+                  <TextField fx:id="eliminarContactoField" layoutX="391.0" layoutY="20.0" promptText="Buscar..." />
+                    </HBox>
+
+                    <!-- Main content area -->
+                    <HBox HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+                        <!-- Contacts list -->
+                        <VBox prefHeight="537.0" prefWidth="233.0">
+                            <ListView fx:id="listaContactos" VBox.vgrow="ALWAYS" />
+                        </VBox>
+
+                        <!-- Mensaje area -->
+                        <VBox fx:id="chatEnterovbox" alignment="TOP_RIGHT" HBox.hgrow="ALWAYS">
+                            <!-- Mensaje header -->
+                            <HBox prefHeight="54.0" prefWidth="575.0" spacing="10">
+                                <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                                    <Label fx:id="chatContactName" text="Contact Name" VBox.vgrow="ALWAYS" />
+                                    <Label id="estadoChat" fx:id="labelOnlineChat" text="Desconectado">
+                                        <VBox.margin>
+                                            <Insets left="5.0" />
+                                        </VBox.margin></Label>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                                </VBox>
+                            </HBox>
+
+                            <!-- Mensaje messages -->
+                            <ScrollPane fx:id="chatMessages" fitToHeight="true" fitToWidth="true" layoutX="1.0" layoutY="1.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+                                <VBox fx:id="chatActualVbox" alignment="BOTTOM_LEFT" spacing="10.0" style="-fx-background-color: #92DCD8" />
+                            </ScrollPane>
+
+                            <!-- Message input area -->
+                            <HBox alignment="BOTTOM_CENTER" spacing="10" style="-fx-background-color: #379F99; -fx-padding: 10;">
+                                <TextField fx:id="messageField" onKeyPressed="#enviarMensaje" promptText="Introduce tu mensaje..." HBox.hgrow="ALWAYS" />
+                                <ImageView fitHeight="30.0" fitWidth="28.0" onMouseClicked="#enviarMensaje" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../imgs/enviar.png" />
+                                    </image>
+                                </ImageView>
+                            </HBox>
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </AnchorPane>
+
+        </AnchorPane>
+    </center>
+    <bottom>
+        <HBox id="bottom" alignment="CENTER" spacing="20" styleClass="hbox">
+            <ProgressBar fx:id="progressBarAll" prefHeight="14.0" prefWidth="556.0" progress="0.0" />
+        </HBox>
+    </bottom>
+    <right>
+        <VBox id="izquierda" prefHeight="609.0" prefWidth="6.0" BorderPane.alignment="CENTER" />
+    </right>
+</BorderPane>

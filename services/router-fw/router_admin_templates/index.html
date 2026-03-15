@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QuickStay Router Console</title>
+  <link rel="stylesheet" href="/static/router_admin.css" />
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <div>
+        <h1>QuickStay Router Production Console</h1>
+        <p>Operacion segura de firewall, rutas, puertos y VPN.</p>
+      </div>
+      <div class="pill" id="who">Cliente: -</div>
+    </header>
+
+    <section class="cards">
+      <article class="card"><div class="k">IP Forward</div><div class="v" id="ipf">-</div></article>
+      <article class="card"><div class="k">Interfaces</div><div class="v" id="ifc">-</div></article>
+      <article class="card"><div class="k">Rutas</div><div class="v" id="rts">-</div></article>
+      <article class="card"><div class="k">Dispositivos</div><div class="v" id="devc">-</div></article>
+    </section>
+
+    <section class="tabs">
+      <button class="tab active" data-tab="overview">Resumen</button>
+      <button class="tab" data-tab="ports">Puertos</button>
+      <button class="tab" data-tab="vpn">VPN</button>
+      <button class="tab" data-tab="devices">Dispositivos</button>
+      <button class="tab" data-tab="nft">nftables</button>
+      <button class="tab" data-tab="ipt">iptables</button>
+      <button class="tab" data-tab="routes">Rutas</button>
+      <button class="tab" data-tab="apply">Aplicar Regla</button>
+    </section>
+
+    <section class="panel" id="panel-overview">
+      <div class="row">
+        <button id="refreshAll" class="primary">Actualizar</button>
+        <select id="refreshRate" style="max-width:120px">
+          <option value="0">Off</option>
+          <option value="5" selected>5s</option>
+          <option value="10">10s</option>
+          <option value="20">20s</option>
+        </select>
+      </div>
+      <div class="grid2">
+        <div><div class="muted">Interfaces</div><pre id="interfacesOut"></pre></div>
+        <div><div class="muted">Rutas</div><pre id="routesOut"></pre></div>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="panel-ports">
+      <div class="row"><button id="refreshPorts" class="primary">Recargar puertos</button></div>
+      <pre id="portsOut"></pre>
+    </section>
+
+    <section class="panel hidden" id="panel-vpn">
+      <div class="row"><button id="refreshVpn" class="primary">Recargar peers</button></div>
+      <pre id="vpnOut"></pre>
+      <div class="row">
+        <input id="vpnName" placeholder="Nombre cliente (ej. admin1)" />
+        <button id="addVpn" class="primary">Agregar cliente</button>
+      </div>
+      <pre id="vpnNewOut"></pre>
+    </section>
+
+    <section class="panel hidden" id="panel-devices">
+      <div class="row">
+        <button id="refreshDevices" class="primary">Vecinos ARP</button>
+        <button id="scanDevices">Escaneo activo</button>
+        <span class="muted" id="devicesMode">Modo: vecinos observados</span>
+      </div>
+      <pre id="devicesOut"></pre>
+    </section>
+
+    <section class="panel hidden" id="panel-nft">
+      <div class="row"><button id="refreshNft" class="primary">Recargar nft</button></div>
+      <pre id="nftOut"></pre>
+    </section>
+
+    <section class="panel hidden" id="panel-ipt">
+      <div class="row"><button id="refreshIpt" class="primary">Recargar iptables</button></div>
+      <pre id="iptOut"></pre>
+    </section>
+
+    <section class="panel hidden" id="panel-routes">
+      <div class="row"><button id="refreshRoutes" class="primary">Recargar rutas</button></div>
+      <pre id="routesOnlyOut"></pre>
+    </section>
+
+    <section class="panel hidden" id="panel-apply">
+      <div class="row"><input id="ruleInput" placeholder="Ejemplo: add rule inet quickstay input tcp dport 2222 accept" /></div>
+      <div class="row">
+        <button id="applyRule" class="primary">Aplicar regla</button>
+        <button id="reloadRules">Refrescar ruleset</button>
+      </div>
+      <pre id="applyOut"></pre>
+    </section>
+  </main>
+
+  <script src="/static/router_admin.js?v=20260308-4"></script>
+</body>
+</html>

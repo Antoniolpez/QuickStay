@@ -1,0 +1,10 @@
+# Database Configuration (Aligned with Phase 3 Docs)
+db.url=jdbc:mysql://172.16.20.20:3306/humhouse
+db.user=quickstay_app
+db.password=app_password
+
+# The code expects a user validation, so ensure this user exists in DB
+# or update the user table to include an admin/system user if needed.
+
+# IoT Configuration
+mqtt.broker=tcp://172.16.40.10:1883

@@ -1,0 +1,152 @@
+@startuml
+skinparam componentStyle rectangle
+skinparam package {
+BorderColor #333333
+BackgroundColor #EEEEEE
+}
+skinparam node {
+BackgroundColor #ADD1B2
+BorderColor #333333
+}
+skinparam component {
+BackgroundColor #B0C4DE
+BorderColor #333333
+}
+
+title Escenario Tipo Packet Tracer: Arquitectura QuickStay - Versión Mejorada (HA + Backup)
+
+[Internet] as Internet
+
+package "Red Corporativa QuickStay" {
+component "Router/Firewall/VPN (FW)\nModelo: Fortigate 60F\nIP: 192.168.1.1" as FW
+
+component "Switch Principal (L3)\nModelo: Cisco Catalyst 3650\nTrunk a todas las VLANs" as SW
+
+package "VLAN 10 (DMZ) - 192.168.10.0/24" {
+    component "Balanceador de Carga HA\nF5 BIG-IP Virtual Edition\nIP: 192.168.10.5" as LoadBalancer
+
+    [Servidor Web 1\n(web1.quickstay.local)\nIP: 192.168.10.10\nHTTP/HTTPS] as WebServer1
+    [Servidor Web 2\n(web2.quickstay.local)\nIP: 192.168.10.11\nHTTP/HTTPS] as WebServer2
+
+    LoadBalancer --> WebServer1 : HTTP/80, HTTPS/443\nHealth Check
+    LoadBalancer --> WebServer2 : HTTP/80, HTTPS/443\nHealth Check
+}
+
+package "VLAN 20 (Servicios) - 192.168.20.0/24" {
+    [Servidor de Aplicación 1 (Java)\n(app1.quickstay.local)\nIP: 192.168.20.10\nPuerto: 8080] as AppServer1
+    [Servidor de Aplicación 2 (Java)\n(app2.quickstay.local)\nIP: 192.168.20.11\nPuerto: 8080] as AppServer2
+
+    database "Servidor BD Principal\nMySQL Master\n(db1.quickstay.local)\nIP: 192.168.20.20\nPuerto: 3306" as DBServer1
+    database "Servidor BD Réplica\nMySQL Slave\n(db2.quickstay.local)\nIP: 192.168.20.21\nPuerto: 3306" as DBServer2
+
+    AppServer1 --> DBServer1 : MySQL/3306\nConexiones App
+    AppServer2 --> DBServer1 : MySQL/3306\nConexiones App
+    DBServer1 --> DBServer2 : MySQL/3306\nReplicación Master-Slave
+}
+
+package "VLAN 30 (Gestión) - 192.168.30.0/24" {
+    component "AD-DC Primario\n(dc1.quickstay.local)\nIP: 192.168.30.10\nPuertos: 53, 389, 445" as ADDC1
+    component "AD-DC Secundario\n(dc2.quickstay.local)\nIP: 192.168.30.11\nPuertos: 53, 389, 445" as ADDC2
+
+    [Servidor de Monitoreo (Zabbix)\n(zabbix.quickstay.local)\nIP: 192.168.30.20\nPuertos: 80, 10051] as Monitoring
+    [Servidor de Seguridad (Wazuh)\n(wazuh.quickstay.local)\nIP: 192.168.30.30\nPuertos: 1514, 1515, 55000] as SecurityServer
+    [Servidor de Backup/DR\n(Veeam Backup Server)\n(backup.quickstay.local)\nIP: 192.168.30.40\nPuertos: 10001, 6162] as BackupServer
+
+    ADDC1 --> ADDC2 : LDAP/389, 445\nReplicación AD
+}
+
+package "VLAN 40 (OT/IoT) - 192.168.40.0/24" {
+    [Centralita IoT Primaria\n(iotgw1.quickstay.local)\nIP: 192.168.40.10\nPuertos: 1883 (MQTT), 8883] as IoTGateway1
+    [Centralita IoT Secundaria\n(iotgw2.quickstay.local)\nIP: 192.168.40.11\nPuertos: 1883 (MQTT), 8883] as IoTGateway2
+}
+}
+
+' =========== CONEXIONES PRINCIPALES ===========
+Internet --> FW : WAN (DHCP/PPPoE)\nNAT/PAT activado
+FW --> SW : LAN Trunk (GigabitEthernet0/1)\nInter-VLAN Routing
+
+' Conexiones del Switch a VLANs
+SW --> LoadBalancer : VLAN 10\nVIP: 192.168.10.100:80/443
+SW --> AppServer1 : VLAN 20
+SW --> DBServer1 : VLAN 20
+SW --> ADDC1 : VLAN 30
+SW --> Monitoring : VLAN 30
+SW --> BackupServer : VLAN 30
+SW --> IoTGateway1 : VLAN 40
+
+' =========== CONEXIONES LÓGICAS Y DE SERVICIO ===========
+
+' Balanceador configuración
+LoadBalancer --> AppServer1 : HTTP/8080\nBalanceo por round-robin
+LoadBalancer --> AppServer2 : HTTP/8080\nBalanceo por round-robin
+
+' Servicios de Directorio Activo y DNS
+AppServer1 --> ADDC1 : DNS/53, LDAP/389, Kerberos/88
+AppServer1 --> ADDC2 : DNS/53 (secundario)
+WebServer1 --> ADDC1 : DNS/53
+WebServer2 --> ADDC1 : DNS/53
+
+' Monitoreo
+Monitoring --> AppServer1 : Agente Zabbix/10050\nMonitoreo App
+Monitoring --> WebServer1 : Agente Zabbix/10050\nMonitoreo Web
+Monitoring --> DBServer1 : MySQL Monitoring/3306\nChecks BD
+Monitoring --> IoTGateway1 : Agente Zabbix/10050\nMonitoreo IoT
+Monitoring --> LoadBalancer : SNMP/161\nMonitoreo Balanceador
+
+' Seguridad y Logs
+SecurityServer --> AppServer1 : Agente Wazuh/1514\nLogs de aplicación
+SecurityServer --> WebServer1 : Agente Wazuh/1514\nLogs web
+SecurityServer --> IoTGateway1 : Agente Wazuh/1514\nLogs IoT
+SecurityServer --> ADDC1 : Agente Wazuh/1514\nLogs de dominio
+
+' Sistema de Backup
+BackupServer --> AppServer1 : Veeam Agent/10001\nBackup incremental
+BackupServer --> WebServer1 : Veeam Agent/10001\nBackup incremental
+BackupServer --> DBServer1 : Veeam Agent/10001\nBackup BD completo
+BackupServer --> ADDC1 : Veeam Agent/10001\nBackup System State
+BackupServer --> IoTGateway1 : Veeam Agent/10001\nBackup configuraciones
+
+' Nota: El BackupServer también se conecta a almacenamiento externo
+note right of BackupServer
+<b>Conexión Externa:</b>
+
+NAS Backup: iSCSI/3260
+
+Cloud: TLS/443 (Azure/AWS)
+
+Cinta: SCSI
+end note
+
+' Redundancia Crítica
+WebServer1 --> WebServer2 : HTTP/80 (Health Check)\nFailover configurado
+AppServer1 --> AppServer2 : Session Replication\nPuerto 4000-4100
+ADDC1 --> ADDC2 : Replicación SYSVOL\nPuertos 389, 445, 135
+IoTGateway1 --> IoTGateway2 : Heartbeat/694\nFailover automático
+
+' =========== REGLAS DE FIREWALL NOTABLES ===========
+note top of FW
+<b>Reglas Firewall Principales:</b>
+
+Internet → DMZ: HTTP/80, HTTPS/443
+
+DMZ → Servicios: 8080, 3306 (solo app servers)
+
+Servicios → Gestión: 53, 389, 10050, 1514
+
+Gestión → Todos: Monitoreo/autorizado
+
+IoT → Servicios: Solo puertos específicos
+
+Denegar resto implícitamente
+end note
+
+' =========== PROTOCOLOS DE REDUNDANCIA ===========
+component "Protocolos de Redundancia" as Redundancy {
+[HSRP/VRRP\nPara gateway default] as HSRP
+[STP/RSTP\nPara loops de red] as STP
+[OSPF\nRouting dinámico] as OSPF
+}
+
+SW --> Redundancy : Implementado en\nconfiguración
+
+@enduml

@@ -1,0 +1,185 @@
+.label-bright {
+    -fx-text-fill: #dcdcdc;
+    -fx-font-size: 14px;
+    -fx-border-radius: 5;
+}
+
+.text-area-style {
+    -fx-control-inner-background: #92DCD8;
+    -fx-text-fill: #225F5C;
+    -fx-border-color: #379F99;
+    -fx-border-radius: 5;
+}
+
+#borderPane {
+    -fx-background-color: #225F5C;
+}
+
+#resenaVBox{
+    -fx-background-color: #92DCD8;
+    -fx-text-fill: #225F5C;
+}
+
+
+.table-view {
+    -fx-background-color: #225F5C;
+    -fx-table-cell-border-color: transparent;
+    
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #379F99;
+    
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #92DCD8;
+    -fx-background-color: #379F99;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: #379F99; /* Reemplaza con el color que desees */
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: #92DCD8;
+    -fx-text-fill: #4b4f51;
+    
+}
+
+/* Eliminar los bordes de las celdas seleccionadas */
+.table-view .table-cell:selected,
+.table-view .table-cell:focused {
+    -fx-border-color: transparent;
+}
+
+/* Opcional: También puedes eliminar los bordes de las celdas que no están seleccionadas */
+.table-view .table-cell {
+    -fx-border-color: transparent;
+}
+
+/* Eliminar los bordes de las celdas al pasar el ratón por encima */
+.table-view .table-cell:hover {
+    -fx-border-color: transparent;
+}
+
+
+
+#listaHoras {
+    -fx-background-color: #92DCD8; /* Color principal */
+    -fx-text-fill: #225F5C;
+    -fx-control-inner-background: #92DCD8;
+}
+
+#alquilaList{
+    -fx-background-color: #92DCD8; /* Color principal */
+    -fx-text-fill: #225F5C;
+    -fx-control-inner-background: #92DCD8;
+}
+
+#listaHoras .list-cell:selected {
+    -fx-text-fill: #92DCD8;
+    -fx-background-color: #379F99;
+}
+
+#puntuaCombo {
+    -fx-background-color: #92DCD8; /* Color principal */
+    -fx-text-fill: #225F5C;
+    -fx-control-inner-background: #92DCD8;
+}
+
+.combo-box-popup .list-cell {
+    -fx-text-fill: #225F5C;
+    -fx-background-color: #92DCD8; /* Asegúrate de que el fondo de las celdas también esté oscuro */
+    
+}
+
+.combo-box-base {
+    -fx-text-fill: #225F5C;
+    
+}
+
+.combo-box {
+    -fx-background-color: #92DCD8; /* Fondo del ComboBox */
+    -fx-text-fill: #225F5C; /* Color del texto */
+    
+}
+
+.combo-box .list-cell {
+    -fx-background-color: #92DCD8; /* Fondo de las celdas */
+    -fx-text-fill: #225F5C; /* Color del texto de las celdas */
+    
+}
+
+.combo-box .combo-box-popup {
+    -fx-background-color: #92DCD8; /* Fondo del popup */
+    -fx-text-fill: #225F5C; /* Color del texto del popup */
+    
+}
+
+#listaHoras .scroll-bar:vertical .thumb {
+    -fx-background-color: #92DCD8; /* Cambia el color de fondo del thumb */
+}
+
+#listaHoras .scroll-bar:vertical .track {
+    -fx-background-color: #379F99; /* Cambia el color de fondo del track */
+}
+
+/* Estilo para el panel de desplazamiento */
+.scroll-pane {
+    -fx-background-color: #225F5C;
+}
+
+/* Estilo para el contenido del panel de desplazamiento */
+.scroll-pane .viewport {
+    -fx-background-color: #379F99;
+    
+}
+
+/* Estilo para las barras de desplazamiento */
+.scroll-pane .scroll-bar:vertical,
+.scroll-pane .scroll-bar:horizontal {
+    -fx-background-color: #379F99;
+    
+}
+
+/* Estilo para la barra de desplazamiento cuando está en estado normal */
+.scroll-pane .scroll-bar:vertical {
+    -fx-background-color: #92DCD8; /* Cambia el color de fondo */
+    -fx-background-insets: 0; /* Elimina los márgenes internos */
+    
+}
+
+
+/* Estilo para la barra de desplazamiento cuando está en estado normal */
+.scroll-pane .scroll-bar:horizontal {
+    -fx-background-color: #379F99; /* Cambia el color de fondo */
+    -fx-background-insets: 0; /* Elimina los márgenes internos */
+    
+}
+
+
+.button-style {
+    -fx-background-color: #93bbb2;
+    -fx-background-radius: 3;
+    -fx-text-fill: #225F5C;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 0);
+}
+
+.button-style:hover {
+    -fx-background-color: #bdd7cc;
+    -fx-text-fill: #225F5C;
+}
+
+#anchorPane {
+    -fx-background-color: #225F5C;
+    
+}
+
+.text-field {
+    -fx-background-color: #92DCD8;
+    -fx-text-fill: #225F5C;
+    -fx-prompt-text-fill: #379F99;
+}

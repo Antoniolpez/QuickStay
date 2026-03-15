@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane minHeight="20.0" minWidth="20.0" prefHeight="48.0" prefWidth="172.0"
+            xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ProyectoFinal.Cliente.Celdas.ContactosCeldas">
+   <HBox layoutX="6.0" layoutY="29.0" minHeight="20.0" minWidth="20.0" prefHeight="48.0" prefWidth="201.0"
+         AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+         AnchorPane.topAnchor="0.0">
+      <ImageView fx:id="imagenContacto" fitHeight="48.0" fitWidth="63.0" pickOnBounds="true" preserveRatio="true"/>
+      <Label style="-fx-text-fill: black" fx:id="nombreContacto" minHeight="20.0" minWidth="20.0" text="Nombre Contacto">
+         <HBox.margin>
+            <Insets left="5.0" top="5.0"/>
+         </HBox.margin>
+      </Label>
+   </HBox>
+</AnchorPane>

@@ -1,0 +1,19 @@
+# QuickStay Database Configuration
+# Copy this file to src/main/resources/config.properties and update with your settings
+
+# Database Connection Settings
+# For local development (default):
+db.url=jdbc:mysql://localhost:3306/humhouse
+db.user=ProyectoFinal
+db.password=root
+
+# For production (Infrastructure VLAN 20 - 172.16.20.0/24):
+# db.url=jdbc:mysql://172.16.20.20:3306/humhouse
+# db.user=quickstay_app
+# db.password=YourSecurePassword
+
+# Notes:
+# - The application uses these settings from MySQL.java loadConfig() method
+# - If this file is not found, defaults to localhost:3306/humhouse
+# - Make sure MySQL server is accessible from the application server
+# - Update firewall rules to allow traffic on port 3306 if using remote DB
