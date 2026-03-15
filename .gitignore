@@ -68,3 +68,5 @@ ssh/keys/
 # Secrets raíz
 .env
 secrets.env
+
+security/wireguard2/
