@@ -1,0 +1,86 @@
+infrastructure:
+  network:
+    interface: "enp0s3"  # Network interface to monitor
+    vlans:
+      - id: 10
+        name: "DMZ"
+        subnet: "172.16.10.0/24"
+      - id: 20
+        name: "App"
+        subnet: "172.16.20.0/24"
+      - id: 30
+        name: "Mgmt"
+        subnet: "172.16.30.0/24"
+      - id: 40
+        name: "IoT"
+        subnet: "172.16.40.0/23"
+      - id: 50
+        name: "VPN"
+        subnet: "172.16.50.0/26"
+  
+  servers:
+    - name: "Load Balancer"
+      ip: "172.16.10.10"
+      vlan: 10
+      type: "load_balancer"
+      services: ["haproxy"]
+    
+    - name: "Web Server 1"
+      ip: "172.16.10.20"
+      vlan: 10
+      type: "web"
+      services: ["apache2", "php"]
+    
+    - name: "Web Server 2"
+      ip: "172.16.10.21"
+      vlan: 10
+      type: "web"
+      services: ["apache2", "php"]
+    
+    - name: "App Server"
+      ip: "172.16.20.10"
+      vlan: 20
+      type: "application"
+      services: ["java", "tomcat"]
+    
+    - name: "MySQL Primary"
+      ip: "172.16.20.20"
+      vlan: 20
+      type: "database"
+      services: ["mysql"]
+    
+    - name: "AD-DC"
+      ip: "172.16.30.10"
+      vlan: 30
+      type: "directory"
+      services: ["samba-ad-dc", "dns"]
+    
+    - name: "Zabbix Server"
+      ip: "172.16.30.22"
+      vlan: 30
+      type: "monitoring"
+      services: ["zabbix-server", "postgresql"]
+    
+    - name: "Wazuh Manager"
+      ip: "172.16.30.30"
+      vlan: 30
+      type: "security"
+      services: ["wazuh-manager"]
+    
+    - name: "MQTT Broker"
+      ip: "172.16.40.10"
+      vlan: 40
+      type: "iot"
+      services: ["mosquitto"]
+
+monitoring:
+  grafana_url: "http://localhost:3000"
+  guacamole_url: "http://localhost:8080"
+  zabbix_api: "http://172.16.30.20:8080/api_jsonrpc.php"
+
+security:
+  ssh_key_path: "/root/.ssh/id_rsa"
+  attack_scripts_dir: "./attack_scripts"
+  allowed_targets:
+    - "172.16.10.0/24"
+    - "172.16.20.0/24"

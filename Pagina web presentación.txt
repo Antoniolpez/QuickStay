@@ -1,0 +1,21 @@
+La presentación será una página web interactiva que:
+
+Se podrá visualizar toca la arquitectura montada
+
+Se podrá ejecutar todas las pruebas, y ataques al entorno (arquitectura)
+
+
+Se podrá acceder al repositorio github dedicado
+
+Se podrán usar los servidores para ver toda la administración, así como la seguridad, la red y el uso de recursos
+Así también como la visualización de los Dashboards
+
+
+Es como tener la arquitectura a mano para verlo todo y hacer de todo, basicamente, presentar el proyecto
+
+
+Se podrán crear escenarios, por ejemplo, escenario de una vlan caida, Corrupción de Base de Datos...
+
+
+
+Dime si has captado lo que hay que hacer antes de empezar
