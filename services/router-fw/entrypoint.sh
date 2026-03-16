@@ -78,6 +78,96 @@ EOF
 	echo "==> WireGuard base generado: $ROUTER_WG_CONF"
 }
 
+
+
+generate_wireguard_peers() {
+    local wg_dir
+    wg_dir="$(dirname "$ROUTER_WG_CONF")"
+    local server_pub
+    server_pub="$(cat "${wg_dir}/server_public.key" 2>/dev/null || wg pubkey < "${wg_dir}/server_private.key")"
+    local endpoint="${WG_PUBLIC_ENDPOINT:-${ROUTER_EDGE_PUBLIC_IP:-192.168.1.40}}:${WG_SERVER_PORT:-51820}"
+    local dns="${WG_DNS:-172.16.30.10}"
+    local base_ip="${WG_VPN_BASE:-172.16.50}"
+    local subnet="${WG_VPN_SUBNET:-172.16.50.0/26}"
+    local peers_count="${WG_PEERS_COUNT:-3}"
+
+    echo "==> Generando peers WireGuard..."
+
+    local peers_added=0
+    for i in $(seq 1 "$peers_count"); do
+        local peer_name="peer_admin${i}"
+        local peer_dir="${wg_dir}/${peer_name}"
+        local peer_ip="${base_ip}.$((i + 1))/32"
+
+        # Si ya existe el peer, saltar
+        if [ -f "${peer_dir}/${peer_name}.conf" ]; then
+            echo "==> Peer ${peer_name} ya existe, omitiendo"
+            # Añadir al wg0.conf si no está ya
+            local peer_pub
+            peer_pub="$(cat "${peer_dir}/publickey-${peer_name}" 2>/dev/null)"
+            if [ -n "$peer_pub" ] && ! grep -q "$peer_pub" "$ROUTER_WG_CONF" 2>/dev/null; then
+                local preshared
+                preshared="$(cat "${peer_dir}/presharedkey-${peer_name}" 2>/dev/null)"
+                cat >> "$ROUTER_WG_CONF" <<EOF
+
+[Peer]
+PublicKey = ${peer_pub}
+PresharedKey = ${preshared}
+AllowedIPs = ${peer_ip}
+EOF
+                peers_added=$((peers_added + 1))
+            fi
+            continue
+        fi
+
+        mkdir -p "$peer_dir"
+
+        # Generar claves
+        local priv pub psk
+        priv="$(wg genkey)"
+        pub="$(printf '%s' "$priv" | wg pubkey)"
+        psk="$(wg genpsk)"
+
+        echo "$priv" > "${peer_dir}/privatekey-${peer_name}"
+        echo "$pub"  > "${peer_dir}/publickey-${peer_name}"
+        echo "$psk"  > "${peer_dir}/presharedkey-${peer_name}"
+        chmod 600 "${peer_dir}/privatekey-${peer_name}" "${peer_dir}/presharedkey-${peer_name}" || true
+
+        # Crear .conf del peer (para importar en cliente WireGuard)
+        cat > "${peer_dir}/${peer_name}.conf" <<EOF
+[Interface]
+Address = ${base_ip}.$((i + 1))/26
+PrivateKey = ${priv}
+DNS = ${dns}
+
+[Peer]
+PublicKey = ${server_pub}
+PresharedKey = ${psk}
+Endpoint = ${endpoint}
+AllowedIPs = 172.16.0.0/16
+PersistentKeepalive = 25
+EOF
+        chmod 600 "${peer_dir}/${peer_name}.conf" || true
+
+        # Añadir peer al wg0.conf del servidor
+        cat >> "$ROUTER_WG_CONF" <<EOF
+
+[Peer]
+PublicKey = ${pub}
+PresharedKey = ${psk}
+AllowedIPs = ${peer_ip}
+EOF
+
+        echo "==> Peer ${peer_name} generado: ${peer_ip}"
+        peers_added=$((peers_added + 1))
+    done
+
+    echo "==> ${peers_added} peers WireGuard configurados"
+}
+
+
+
+
 start_zabbix_agent() {
 	if [ "${ZABBIX_AGENT_ENABLE:-1}" != "1" ]; then
 		echo "==> Zabbix agent deshabilitado en router"
@@ -152,7 +242,7 @@ start_local_wireguard() {
 
 	ip address add "$WG_ADDR" dev wg0
 	ip link set mtu 1420 up dev wg0
-	ip route replace "${WG_SUBNET:-10.50.0.0/24}" dev wg0
+	ip route replace "${WG_SUBNET:-172.16.50.0/26}" dev wg0
 
 	echo "==> WireGuard local activo: $WG_ADDR"
 	wg show || true
@@ -160,6 +250,7 @@ start_local_wireguard() {
 
 start_zabbix_agent
 ensure_wireguard_base_conf
+generate_wireguard_peers
 
 # Certificado interno para enrutar HTTPS de la IP interna al panel del router.
 mkdir -p /etc/haproxy/certs
@@ -298,26 +389,26 @@ nft 'add rule inet quickstay forward ip saddr 172.16.40.0/23 ip daddr 172.16.40.
 
 # === VLAN 50 (VPN) ===
 # VPN a Management (acceso full)
-nft 'add rule inet quickstay forward ip saddr 10.50.0.0/24 ip daddr 172.16.30.0/24 accept comment "VPN to Mgmt"'
+nft 'add rule inet quickstay forward ip saddr 172.16.50.0/26 ip daddr 172.16.30.0/24 accept comment "VPN to Mgmt"'
 nft 'add rule inet quickstay forward ip saddr 172.16.50.0/26 ip daddr 172.16.30.0/24 accept comment "vpn_net to Mgmt"'
 
 # VPN a DNS de Management (AD-DC)
-nft 'add rule inet quickstay forward ip saddr 10.50.0.0/24 ip daddr 172.16.30.0/24 udp dport 53 accept comment "VPN to Mgmt DNS (UDP)"'
-nft 'add rule inet quickstay forward ip saddr 10.50.0.0/24 ip daddr 172.16.30.0/24 tcp dport 53 accept comment "VPN to Mgmt DNS (TCP)"'
+nft 'add rule inet quickstay forward ip saddr 172.16.50.0/26 ip daddr 172.16.30.0/24 udp dport 53 accept comment "VPN to Mgmt DNS (UDP)"'
+nft 'add rule inet quickstay forward ip saddr 172.16.50.0/26 ip daddr 172.16.30.0/24 tcp dport 53 accept comment "VPN to Mgmt DNS (TCP)"'
 nft 'add rule inet quickstay forward ip saddr 172.16.50.0/26 ip daddr 172.16.30.0/24 udp dport 53 accept comment "vpn_net to Mgmt DNS (UDP)"'
 nft 'add rule inet quickstay forward ip saddr 172.16.50.0/26 ip daddr 172.16.30.0/24 tcp dport 53 accept comment "vpn_net to Mgmt DNS (TCP)"'
 
 # VPN a App (acceso full)
-nft 'add rule inet quickstay forward ip saddr 10.50.0.0/24 ip daddr 172.16.20.0/24 accept comment "VPN to App"'
+nft 'add rule inet quickstay forward ip saddr 172.16.50.0/26 ip daddr 172.16.20.0/24 accept comment "VPN to App"'
 
 # VPN a DMZ (acceso full)
-nft 'add rule inet quickstay forward ip saddr 10.50.0.0/24 ip daddr 172.16.10.0/24 accept comment "VPN to DMZ"'
+nft 'add rule inet quickstay forward ip saddr 172.16.50.0/26 ip daddr 172.16.10.0/24 accept comment "VPN to DMZ"'
 
 # VPN a IoT (acceso full)
-nft 'add rule inet quickstay forward ip saddr 10.50.0.0/24 ip daddr 172.16.40.0/23 accept comment "VPN to IoT"'
+nft 'add rule inet quickstay forward ip saddr 172.16.50.0/26 ip daddr 172.16.40.0/23 accept comment "VPN to IoT"'
 
 # VPN return traffic desde todas las redes
-nft 'add rule inet quickstay forward ip daddr 10.50.0.0/24 ct state established,related accept comment "Return traffic to VPN"'
+nft 'add rule inet quickstay forward ip daddr 172.16.50.0/26 ct state established,related accept comment "Return traffic to VPN"'
 
 # === ICMP para diagnóstico ===
 nft 'add rule inet quickstay forward icmp type echo-request accept comment "Allow ping forward"'
@@ -332,7 +423,7 @@ echo "[4/5] Configurando reglas NAT..."
 nft 'add rule inet quickstay postrouting ip saddr 172.16.0.0/16 ip daddr != 172.16.0.0/16 counter masquerade comment "Masquerade internal to WAN"'
 
 # SNAT: Masquerade desde VPN a redes internas (para evitar problemas de routing asimétrico)
-nft 'add rule inet quickstay postrouting ip saddr 10.50.0.0/24 ip daddr 172.16.0.0/16 counter masquerade comment "Masquerade VPN to internal"'
+nft 'add rule inet quickstay postrouting ip saddr 172.16.50.0/26 ip daddr 172.16.0.0/16 counter masquerade comment "Masquerade VPN to internal"'
 nft 'add rule inet quickstay postrouting ip saddr 172.16.50.0/26 ip daddr 172.16.0.0/16 counter masquerade comment "Masquerade vpn_net to internal"'
 
 start_local_wireguard
