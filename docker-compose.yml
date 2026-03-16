@@ -39,14 +39,6 @@ networks:
         - subnet: 172.16.40.0/23
           gateway: 172.16.40.1
 
-  # VLAN 50 - VPN (Administracion remota)
-  vpn_net:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.16.50.0/26
-          gateway: 172.16.50.1
-
 services:
   # ==========================================================================
   # ROUTER/FIREWALL - Gateway Principal con nftables + WireGuard integrado
@@ -66,7 +58,6 @@ services:
       app_net:
       mgmt_net:
       iot_net:
-      vpn_net:
     ports:
       - "80:80"            # HTTP publico
       - "443:443"          # HTTPS publico
