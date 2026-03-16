@@ -27,6 +27,7 @@ def on_connect(client, userdata, flags, rc):
 def simulate_device(device):
     client = mqtt.Client(CallbackAPIVersion.VERSION1, device["id"])
     client.on_connect = on_connect
+    client.username_pw_set("quickstay_iot", "QuickStay2026!MQTT")
     
     try:
         # Connect to broker (Use localhost if standard IP fails for testing)

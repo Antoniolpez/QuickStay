@@ -1,8 +1,8 @@
 # ============================================================================
 # QUICKSTAY INFRASTRUCTURE - DOCKER COMPOSE MASTER
 # ============================================================================
-# Despliegue completo de la infraestructura QuickStay con segmentacion VLAN
-# Autor: Antonio Lopez Montes
+# Despliegue completo de la infraestructura QuickStay con segmentación VLAN
+# Autor: Antonio López Montes
 # Fecha: Enero 2026
 # ============================================================================
 
@@ -15,7 +15,7 @@ networks:
         - subnet: 172.16.10.0/24
           gateway: 172.16.10.1
 
-  # VLAN 20 - Servicios (Aplicacion y Base de Datos)
+  # VLAN 20 - Servicios (Aplicación y Base de Datos)
   app_net:
     driver: bridge
     ipam:
@@ -23,7 +23,7 @@ networks:
         - subnet: 172.16.20.0/24
           gateway: 172.16.20.1
 
-  # VLAN 30 - Gestion (AD-DC, Zabbix, Wazuh)
+  # VLAN 30 - Gestión (AD-DC, Zabbix, Wazuh)
   mgmt_net:
     driver: bridge
     ipam:
@@ -39,7 +39,7 @@ networks:
         - subnet: 172.16.40.0/23
           gateway: 172.16.40.1
 
-  # VLAN 50 - VPN (Administracion remota)
+  # VLAN 50 - VPN (Administración remota)
   vpn_net:
     driver: bridge
     ipam:
@@ -49,11 +49,11 @@ networks:
 
 services:
   # ==========================================================================
-  # ROUTER/FIREWALL - Gateway Principal con nftables + WireGuard integrado
+  # ROUTER/FIREWALL - Gateway Principal con nftables
   # ==========================================================================
   router-fw:
     build:
-      context: ./services/router-fw
+      context: ./infrastructure/docker/router-fw
       network: host
     container_name: quickstay-router-fw
     hostname: router-fw
@@ -68,9 +68,10 @@ services:
       iot_net:
       vpn_net:
     ports:
-      - "80:80"            # HTTP publico
-      - "443:443"          # HTTPS publico
-      - "51820:51820/udp"  # WireGuard VPN
+      - "80:80"            # HTTP publico (edge del router)
+      - "443:443"          # HTTPS publico (edge del router)
+      - "51820:51820/udp"  # WireGuard via router (WG local en router-fw)
+
     env_file:
       - ./secrets.env
     environment:
@@ -83,12 +84,12 @@ services:
     dns_search:
       - quickstay.local
     volumes:
-      - ./services/router-fw/entrypoint.sh:/usr/local/bin/entrypoint.sh:ro
-      - ./services/router-fw/router_admin.py:/usr/local/bin/router_admin.py:ro
-      - ./services/router-fw/router_admin_templates:/usr/local/bin/router_admin_templates:ro
-      - ./services/router-fw/router_admin_static:/usr/local/bin/router_admin_static:ro
+      - ./infrastructure/docker/router-fw/entrypoint.sh:/usr/local/bin/entrypoint.sh:ro
+      - ./infrastructure/docker/router-fw/router_admin.py:/usr/local/bin/router_admin.py:ro
+      - ./infrastructure/docker/router-fw/router_admin_templates:/usr/local/bin/router_admin_templates:ro
+      - ./infrastructure/docker/router-fw/router_admin_static:/usr/local/bin/router_admin_static:ro
       - ./infrastructure/config/nftables:/etc/nftables
-      - ./security/wireguard2/config:/etc/wireguard
+      - ./wireguard/config:/etc/wireguard
       - /lib/modules:/lib/modules:ro
       - ./logs/router:/var/log
     restart: unless-stopped
@@ -104,7 +105,8 @@ services:
   # ==========================================================================
   load-balancer:
     build:
-      context: ./services/haproxy
+      context: .
+      dockerfile: ./infrastructure/docker/haproxy/Dockerfile
       network: host
     container_name: quickstay-lb
     hostname: lb.quickstay.local
@@ -112,7 +114,7 @@ services:
       dmz_net:
         ipv4_address: 172.16.10.10
     expose:
-      - "8404"  # Stats solo interno
+      - "8404"  # Stats solo interno (sin publicar al host)
     env_file:
       - ./secrets.env
     environment:
@@ -141,11 +143,9 @@ services:
       start_period: 20s
 
   # ==========================================================================
-  # WEB SERVER 1 (Apache + PHP)
-  # ==========================================================================
   web-server-1:
     build:
-      context: ./services/web-server
+      context: ./infrastructure/docker/web-server
       network: host
     container_name: quickstay-web-1
     hostname: web1.quickstay.local
@@ -181,7 +181,7 @@ services:
   # ==========================================================================
   web-server-2:
     build:
-      context: ./services/web-server
+      context: ./infrastructure/docker/web-server
       network: host
     container_name: quickstay-web-2
     hostname: web2.quickstay.local
@@ -217,7 +217,7 @@ services:
   # ==========================================================================
   app-server:
     build:
-      context: ./services/app
+      context: ./Documentación/app_repo
       network: host
     container_name: quickstay-app
     hostname: app.quickstay.local
@@ -257,11 +257,11 @@ services:
         max-file: "3"
 
   # ==========================================================================
-  # MYSQL DATABASE
+  # MYSQL DATABASE (Primary)
   # ==========================================================================
   mysql-db:
     build:
-      context: ./services/mysql
+      context: ./infrastructure/docker/mysql
       network: host
     container_name: quickstay-mysql
     hostname: db.quickstay.local
@@ -287,7 +287,7 @@ services:
       - quickstay.local
     volumes:
       - mysql-data:/var/lib/mysql
-      - ./infrastructure/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./Documentación/infrastructure/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
       - ./infrastructure/config/mysql/my.cnf:/etc/mysql/conf.d/custom.cnf:ro
       - ./logs/mysql:/var/log/mysql
     command: --default-authentication-plugin=mysql_native_password
@@ -300,11 +300,11 @@ services:
       start_period: 60s
 
   # ==========================================================================
-  # ACTIVE DIRECTORY - Domain Controller (Samba AD-DC)
+  # ACTIVE DIRECTORY - Domain Controller Primary (Samba AD-DC)
   # ==========================================================================
   ad-dc-primary:
     build:
-      context: ./services/samba-ad-dc
+      context: ./infrastructure/docker/samba-ad-dc
       network: host
     container_name: quickstay-ad-dc1
     hostname: dc1.quickstay.local
@@ -500,7 +500,7 @@ services:
   # ==========================================================================
   mqtt-broker:
     build:
-      context: ./services/mqtt
+      context: ./infrastructure/docker/mqtt
       network: host
     container_name: quickstay-mqtt
     hostname: mqtt.quickstay.local
@@ -534,11 +534,11 @@ services:
       start_period: 25s
 
   # ==========================================================================
-  # IoT SIMULATOR (Python)
+  # IoT SIMULATOR (Python script)
   # ==========================================================================
   iot-simulator:
     build:
-      context: ./services/iot
+      context: ./Documentación/iot
       network: host
     container_name: quickstay-iot-simulator
     networks:
@@ -558,7 +558,7 @@ services:
     restart: unless-stopped
 
   # ==========================================================================
-  # GRAFANA (Visualizacion de Metricas)
+  # GRAFANA (Visualización de Métricas)
   # ==========================================================================
   grafana:
     image: grafana/grafana:11.1.0
@@ -578,11 +578,11 @@ services:
     restart: unless-stopped
 
   # ==========================================================================
-  # DASHBOARD MAESTRO - Backend (FastAPI/Python)
+  # DASHBOARD MAESTRO - Backend (FastAPI)
   # ==========================================================================
   dashboard-backend:
     build:
-      context: ./services/dashboard-v2/backend
+      context: ./Documentación/dashboard-v2/backend
       network: host
     container_name: quickstay-dashboard-backend
     networks:
@@ -601,7 +601,7 @@ services:
     dns_search:
       - quickstay.local
     volumes:
-      - ./services/dashboard-v2/backend:/app
+      - ./Documentación/dashboard-v2/backend:/app
       - /var/run/docker.sock:/var/run/docker.sock
       - ./logs/dashboard:/var/log/dashboard
     restart: unless-stopped
@@ -611,7 +611,7 @@ services:
   # ==========================================================================
   dashboard-frontend:
     build:
-      context: ./services/dashboard-v2/frontend
+      context: ./Documentación/dashboard-v2/frontend
       network: host
     container_name: quickstay-dashboard-frontend
     networks:
@@ -619,7 +619,7 @@ services:
     environment:
       - VITE_API_URL=http://172.16.30.40:8000
     volumes:
-      - ./services/dashboard-v2/frontend:/app
+      - ./Documentación/dashboard-v2/frontend:/app
       - /app/node_modules
     depends_on:
       - dashboard-backend
