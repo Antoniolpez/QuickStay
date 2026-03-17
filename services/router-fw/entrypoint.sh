@@ -503,8 +503,7 @@ frontend router_admin_tls_front
 
 backend dmz_lb_http
 	mode http
-	option httpchk GET /
-	server lb 172.16.10.10:80 check inter 2000 rise 2 fall 3
+	server lb 172.16.10.10:80
 
 backend router_admin_http
 	mode http
