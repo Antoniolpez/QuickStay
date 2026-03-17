@@ -1706,6 +1706,8 @@ if command -v python3 >/dev/null 2>&1; then
 
     if python3 -c "import yaml" >/dev/null 2>&1; then
         if [ -f "monitoring/provision_zabbix.py" ]; then
+            log_info "Esperando a que Zabbix web esté listo..."
+            sleep 30
             log_info "Auto-configurando hosts en Zabbix desde config.yaml..."
             zbx_provision_retries="${ZABBIX_PROVISION_RETRIES:-6}"
             zbx_provision_delay="${ZABBIX_PROVISION_DELAY_SEC:-10}"
