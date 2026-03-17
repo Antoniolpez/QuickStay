@@ -6,9 +6,9 @@ QuickStay - Zabbix Auto-Provisioning Script
 - Obtiene la URL de la API Zabbix desde ese mismo archivo
 - Lee la contraseña de admin de Zabbix desde secrets.env
 - Crea automáticamente los hosts para cada servidor definido en config.yaml
-- Asocia la plantilla "Template Module ICMP Ping" para tener ping/uptime
+- Asocia la plantilla "ICMP Ping" para tener ping/uptime
 - Si existe un host de hipervisor (<hostname>-hypervisor), le asocia
-  la plantilla "Template OS Linux by Zabbix agent".
+  la plantilla "Linux by Zabbix agent".
 
 Este script está pensado para ejecutarse desde la raíz del proyecto
 (ProyectoFinal/) y se llama automáticamente desde deploy-complete.sh.
@@ -33,7 +33,7 @@ except ImportError:
     sys.exit(0)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-CONFIG_PATH = BASE_DIR / "Documentación" / "dashboard-v2" / "backend" / "config.yaml"
+CONFIG_PATH = BASE_DIR / "services" / "dashboard-v2" / "backend" / "config.yaml"
 SECRETS_PATH = BASE_DIR / "secrets.env"
 
 
@@ -218,9 +218,9 @@ def attach_linux_template_to_hypervisor(zbx_url: str, auth: str) -> None:
 
     hostid = hosts[0]["hostid"]
 
-    linux_tpl = get_template_id(zbx_url, auth, "Template OS Linux by Zabbix agent")
+    linux_tpl = get_template_id(zbx_url, auth, "Linux by Zabbix agent")
     if not linux_tpl:
-        print("[ZABBIX-PROVISION] Plantilla 'Template OS Linux by Zabbix agent' no encontrada, se omite.")
+        print("[ZABBIX-PROVISION] Plantilla 'Linux by Zabbix agent' no encontrada, se omite.")
         return
 
     # Añadir plantilla al host
@@ -236,6 +236,58 @@ def attach_linux_template_to_hypervisor(zbx_url: str, auth: str) -> None:
     print(f"[ZABBIX-PROVISION] Plantilla OS Linux asociada a host {host_name}")
 
 
+def ensure_autoregistration_action(zbx_url: str, auth: str, groupid: str) -> None:
+    """Crea la acción de autoregistro si no existe."""
+    # Verificar si ya existe
+    result = zbx_request(zbx_url, "action.get", {
+        "filter": {"name": ["QuickStay Autoregistro"]},
+        "output": ["actionid"]
+    }, auth)
+    if result:
+        print("[ZABBIX-PROVISION] Acción de autoregistro ya existe")
+        return
+
+    # Obtener template Linux
+    linux_tpl = get_template_id(zbx_url, auth, "Linux by Zabbix agent")
+    if not linux_tpl:
+        linux_tpl = get_template_id(zbx_url, auth, "Linux by Zabbix agent")
+
+    operations = [
+        {
+            "operationtype": 4,
+            "opgroup": [{"groupid": groupid}]
+        }
+    ]
+
+    if linux_tpl:
+        operations.append({
+            "operationtype": 6,  # Añadir template
+            "optemplate": [{"templateid": linux_tpl}]
+        })
+
+    action = {
+        "name": "QuickStay Autoregistro",
+        "eventsource": 2,  # Autoregistro
+        "status": 0,       # Habilitado
+        "filter": {
+            "evaltype": 0,
+            "conditions": [
+                {
+                    "conditiontype": 22,  # Host metadata
+                    "operator": 2,        # Contiene
+                    "value": "quickstay"
+                }
+            ]
+        },
+        "operations": operations
+    }
+
+    result = zbx_request(zbx_url, "action.create", action, auth)
+    if result:
+        print(f"[ZABBIX-PROVISION] Acción de autoregistro creada: {result}")
+    else:
+        print("[ZABBIX-PROVISION] No se pudo crear la acción de autoregistro")
+
 def main() -> None:
     try:
         cfg = load_yaml_config()
@@ -247,26 +299,44 @@ def main() -> None:
             print("[ZABBIX-PROVISION] No se ha definido monitoring.zabbix_api en config.yaml")
             sys.exit(0)
 
-        zbx_user = "admin"
-        zbx_pass = secrets.get("ZABBIX_ADMIN_PASSWORD", "admin")
+        zbx_user = "Admin"
+        zbx_pass = secrets.get("ZABBIX_ADMIN_PASSWORD", "zabbix")
 
         # Login
         print(f"[ZABBIX-PROVISION] Conectando a Zabbix API en {zbx_url}...")
-        auth = zbx_request(
-            zbx_url,
-            "user.login",
-            {"user": zbx_user, "password": zbx_pass},
-            auth=None,
-        )
-        print("[ZABBIX-PROVISION] Login correcto en Zabbix API")
+        # Intentar login con contraseña de secrets.env, fallback a "zabbix"
+        auth = None
+        for pwd in [zbx_pass, "zabbix"]:
+            try:
+                auth = zbx_request(
+                    zbx_url,
+                    "user.login",
+                    {"username": zbx_user, "password": pwd},
+                    auth=None,
+                )
+                print(f"[ZABBIX-PROVISION] Login correcto en Zabbix API")
+                # Si entró con contraseña por defecto, cambiarla
+                if pwd == "zabbix" and zbx_pass != "zabbix":
+                    try:
+                        user_id = zbx_request(zbx_url, "user.get", {"filter": {"username": zbx_user}, "output": ["userid"]}, auth)[0]["userid"]
+                        zbx_request(zbx_url, "user.update", {"userid": user_id, "passwd": zbx_pass}, auth)
+                        print("[ZABBIX-PROVISION] Contraseña de Admin actualizada")
+                    except Exception as e:
+                        print(f"[ZABBIX-PROVISION] No se pudo cambiar contraseña: {e}")
+                break
+            except Exception:
+                continue
+        if not auth:
+            print("[ZABBIX-PROVISION] No se pudo autenticar en Zabbix")
+            sys.exit(0)
 
         # Grupo principal
         groupid = ensure_hostgroup(zbx_url, auth, "QuickStay Infrastructure")
 
         # Plantilla ICMP
-        icmp_tpl = get_template_id(zbx_url, auth, "Template Module ICMP Ping")
+        icmp_tpl = get_template_id(zbx_url, auth, "ICMP Ping")
         if not icmp_tpl:
-            print("[ZABBIX-PROVISION] Plantilla 'Template Module ICMP Ping' no encontrada; omitiendo auto-configuración.")
+            print("[ZABBIX-PROVISION] Plantilla 'ICMP Ping' no encontrada; omitiendo auto-configuración.")
             sys.exit(0)
 
         servers = cfg.get("infrastructure", {}).get("servers", [])
@@ -274,6 +344,7 @@ def main() -> None:
 
         # Intentar asociar plantilla Linux al hipervisor (si existe)
         attach_linux_template_to_hypervisor(zbx_url, auth)
+        ensure_autoregistration_action(zbx_url, auth, groupid)
 
         print("[ZABBIX-PROVISION] Auto-configuración de Zabbix completada.")
 
@@ -285,3 +356,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

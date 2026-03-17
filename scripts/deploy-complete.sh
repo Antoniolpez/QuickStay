@@ -145,6 +145,9 @@ run_factory_reset_cleanup() {
     log_info "Aplicando limpieza global de Docker (imágenes/cachés/volúmenes no usados)..."
     docker system prune -af --volumes >/dev/null 2>&1 || true
     docker builder prune -af >/dev/null 2>&1 || true
+    docker stop $(docker ps -aq) 2>/dev/null || true
+    docker rm $(docker ps -aq) 2>/dev/null || true
+    docker network prune -f >/dev/null 2>&1 || true
 
     log_success "Limpieza previa completada"
 }
@@ -484,6 +487,7 @@ prefetch_runtime_images() {
 run_compose_up() {
     local startup_log="logs/deploy/startup.log"
     set +e
+    docker network prune -f >/dev/null 2>&1 || true
     compose --env-file secrets.env up -d 2>&1 | tee "$startup_log"
     local up_exit=${PIPESTATUS[0]}
     set -e
@@ -844,13 +848,13 @@ echo ""
 set +e
 
 log_info "Validando directorios críticos..."
-if test_dir "Documentación/app_repo"; then
+if test_dir "services/app"; then
     log_success "Directorio Java"
 fi
-if test_dir "Documentación/dashboard-v2"; then
+if test_dir "services/dashboard-v2"; then
     log_success "Directorio Dashboard"
 fi
-if test_dir "Documentación/iot"; then
+if test_dir "services/iot"; then
     log_success "Directorio IoT"
 fi
 if test_dir "infrastructure"; then
@@ -861,7 +865,7 @@ echo ""
 log_info "Validando archivos críticos..."
 test_file "docker-compose.yml" && log_success "docker-compose.yml" || exit 1
 test_file "secrets.env" && log_success "secrets.env" || log_warning "secrets.env (valores por defecto)"
-test_file "deploy-all.sh" && log_success "deploy-all.sh" || log_error "Script maestro"
+test_file "scripts/deploy-all.sh" && log_success "deploy-all.sh" || log_error "Script maestro"
 
 echo ""
 
@@ -877,10 +881,10 @@ echo ""
 
 # Java
 log_info "Analizando código Java..."
-if test_file "Documentación/app_repo/pom.xml"; then
+if test_file "services/app/pom.xml"; then
     log_info "   Verificando sintaxis XML..."
     if command -v xmllint &> /dev/null; then
-        if xmllint --noout "Documentación/app_repo/pom.xml" 2>/dev/null; then
+        if xmllint --noout "services/app/pom.xml" 2>/dev/null; then
             log_success "   pom.xml sintaxis válida"
         else
             log_warning "   pom.xml tiene advertencias XML"
@@ -889,11 +893,11 @@ if test_file "Documentación/app_repo/pom.xml"; then
         log_debug "   xmllint no instalado, saltando validación"
     fi
     
-    if test_file "Documentación/app_repo/src/main/java/ProyectoFinal/Servidor/Servidor.java"; then
+    if test_file "services/app/src/main/java/ProyectoFinal/Servidor/Servidor.java"; then
         log_success "   Servidor.java encontrado"
         
         # Verificar clase principal
-        if grep -q "public static void main" "Documentación/app_repo/src/main/java/ProyectoFinal/Servidor/Servidor.java"; then
+        if grep -q "public static void main" "services/app/src/main/java/ProyectoFinal/Servidor/Servidor.java"; then
             log_success "   Método main encontrado"
         else
             log_warning "   Método main no encontrado"
@@ -903,7 +907,7 @@ if test_file "Documentación/app_repo/pom.xml"; then
     fi
     
     # Verificar target/classes (compilado)
-    if [ -d "Documentación/app_repo/target" ]; then
+    if [ -d "services/app/target" ]; then
         log_success "   Carpeta target existe (código compilado)"
     else
         log_warning "   Carpeta target no existe (necesitará compilarse)"
@@ -917,10 +921,10 @@ echo ""
 # Python IoT
 log_info "Analizando Python IoT..."
 set +e
-if test_file "Documentación/iot/iot_client.py"; then
+if test_file "services/iot/iot_client.py"; then
     if command -v python3 &> /dev/null; then
         log_info "   Verificando sintaxis Python..."
-        if python3 -m py_compile "Documentación/iot/iot_client.py" 2>/dev/null; then
+        if python3 -m py_compile "services/iot/iot_client.py" 2>/dev/null; then
             log_success "   iot_client.py sintaxis válida"
         else
             log_warning "   iot_client.py tiene errores de sintaxis (no bloqueante para el despliegue)"
@@ -929,7 +933,7 @@ if test_file "Documentación/iot/iot_client.py"; then
         # Verificar imports
         if python3 << 'PYEOF' 2>/dev/null
 import ast
-with open("Documentación/iot/iot_client.py") as f:
+with open("services/iot/iot_client.py") as f:
     ast.parse(f.read())
 PYEOF
         then
@@ -942,8 +946,8 @@ PYEOF
     fi
     
     # Verificar dependencias
-    if test_file "Documentación/iot/Dockerfile"; then
-        if grep -q "paho-mqtt" "Documentación/iot/Dockerfile"; then
+    if test_file "services/iot/Dockerfile"; then
+        if grep -q "paho-mqtt" "services/iot/Dockerfile"; then
             log_success "   Dependencias MQTT definidas"
         fi
     fi
@@ -958,9 +962,9 @@ echo ""
 log_info "Analizando Dashboard (React + FastAPI)..."
 
 # Validación package.json
-if test_file "Documentación/dashboard-v2/frontend/package.json"; then
+if test_file "services/dashboard-v2/frontend/package.json"; then
     if command -v python3 &> /dev/null; then
-        if python3 -m json.tool "Documentación/dashboard-v2/frontend/package.json" > /dev/null 2>&1; then
+        if python3 -m json.tool "services/dashboard-v2/frontend/package.json" > /dev/null 2>&1; then
             log_success "   package.json válido"
         else
             log_warning "   package.json tiene posibles errores JSON (no bloqueante)"
@@ -969,11 +973,11 @@ if test_file "Documentación/dashboard-v2/frontend/package.json"; then
 fi
 
 # Validación requirements.txt
-if test_file "Documentación/dashboard-v2/backend/requirements.txt"; then
+if test_file "services/dashboard-v2/backend/requirements.txt"; then
     log_success "   requirements.txt (FastAPI) encontrado"
     
     # Verificar dependencias críticas
-    if grep -q "fastapi\|uvicorn" "Documentación/dashboard-v2/backend/requirements.txt"; then
+    if grep -q "fastapi\|uvicorn" "services/dashboard-v2/backend/requirements.txt"; then
         log_success "   FastAPI y uvicorn definidos"
     else
         log_warning "   FastAPI o uvicorn no encontrados en requirements.txt"
@@ -982,9 +986,9 @@ fi
 
 # Validación sintaxis main.py (no bloqueante)
 set +e
-if test_file "Documentación/dashboard-v2/backend/main.py"; then
+if test_file "services/dashboard-v2/backend/main.py"; then
     if command -v python3 &> /dev/null; then
-        if python3 -m py_compile "Documentación/dashboard-v2/backend/main.py" 2>/dev/null; then
+        if python3 -m py_compile "services/dashboard-v2/backend/main.py" 2>/dev/null; then
             log_success "   main.py (FastAPI) sintaxis válida"
         else
             log_warning "   main.py tiene errores de sintaxis (no bloqueante para el despliegue)"
@@ -997,11 +1001,11 @@ echo ""
 
 # Base de datos
 log_info "Analizando Base de Datos..."
-if test_file "Documentación/infrastructure/db/init.sql"; then
+if test_file "infrastructure/db/init.sql"; then
     log_info "   Verificando estructura SQL..."
     
     # Contar tablas
-    table_count=$(grep -c "CREATE TABLE" "Documentación/infrastructure/db/init.sql" || echo 0)
+    table_count=$(grep -c "CREATE TABLE" "infrastructure/db/init.sql" || echo 0)
     if [ "$table_count" -gt 0 ]; then
         log_success "   $table_count tablas SQL definidas"
     else
@@ -1009,11 +1013,11 @@ if test_file "Documentación/infrastructure/db/init.sql"; then
     fi
     
     # Verificar tabla principal
-    if grep -q "CREATE TABLE.*usuario" "Documentación/infrastructure/db/init.sql"; then
+    if grep -q "CREATE TABLE.*usuario" "infrastructure/db/init.sql"; then
         log_success "   Tabla 'usuario' encontrada"
     fi
     
-    if grep -q "CREATE TABLE.*propiedad" "Documentación/infrastructure/db/init.sql"; then
+    if grep -q "CREATE TABLE.*propiedad" "infrastructure/db/init.sql"; then
         log_success "   Tabla 'propiedad' encontrada"
     fi
 else
@@ -1741,9 +1745,9 @@ echo ""
 
 # 14.4 Agente Wazuh en host real (opt-in). En esta maqueta va en máquinas simuladas.
 if [ "${ENABLE_HOST_WAZUH_AGENT:-0}" = "1" ]; then
-    if [ -f "Documentación/infrastructure/scripts/14_deploy_security.sh" ]; then
+    if [ -f "scripts/fases/14_deploy_security.sh" ]; then
         log_info "Instalando agente Wazuh en el host real (opt-in)..."
-        if sudo bash Documentación/infrastructure/scripts/14_deploy_security.sh >/dev/null 2>&1; then
+        if sudo bash scripts/fases/14_deploy_security.sh >/dev/null 2>&1; then
             log_success "Agente Wazuh instalado/configurado en el host (opt-in)"
         else
             log_warning "No se pudo instalar agente Wazuh en host automáticamente (puede requerir ajustes manuales)"
