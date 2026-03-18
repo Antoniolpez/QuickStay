@@ -22,7 +22,7 @@ import os
 import sys
 import time
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 import urllib.request
 import urllib.error
 
@@ -62,7 +62,7 @@ def load_secrets() -> Dict[str, str]:
     return secrets
 
 
-def zbx_request(url: str, method: str, params: Dict[str, Any] | None, auth: str | None, req_id: int = 1, retries: int = 10) -> Any:
+def zbx_request(url: str, method: str, params: Optional[Dict[str, Any]], auth: Optional[str], req_id: int = 1, retries: int = 10) -> Any:
     """
     Realizar una solicitud a la API de Zabbix con reintentos automáticos.
     
@@ -131,7 +131,7 @@ def ensure_hostgroup(zbx_url: str, auth: str, name: str) -> str:
     return created["groupids"][0]
 
 
-def get_template_id(zbx_url: str, auth: str, template_name: str) -> str | None:
+def get_template_id(zbx_url: str, auth: str, template_name: str) -> Optional[str]:
     result = zbx_request(
         zbx_url,
         "template.get",
