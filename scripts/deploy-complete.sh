@@ -382,10 +382,13 @@ PY
                 [ -f /etc/wireguard/peers/${peer_name}.qr.txt ] && cp -f /etc/wireguard/peers/${peer_name}.qr.txt \"\$d/${peer_name}.qr.txt\" || true
             " >/dev/null 2>&1 || true
 
-            [ -f "wireguard/config/peer_${peer_name}.conf" ] && cp -f "wireguard/config/peer_${peer_name}.conf" "$peer_conf" 2>/dev/null || true
-            [ -f "wireguard/config/peers/${peer_name}.conf" ] && cp -f "wireguard/config/peers/${peer_name}.conf" "$peer_conf" 2>/dev/null || true
-            [ -f "wireguard/config/peers/${peer_name}.qr.png" ] && cp -f "wireguard/config/peers/${peer_name}.qr.png" "$peer_qr_png" 2>/dev/null || true
-            [ -f "wireguard/config/peers/${peer_name}.qr.txt" ] && cp -f "wireguard/config/peers/${peer_name}.qr.txt" "$peer_qr_txt" 2>/dev/null || true
+            [ -f "security/wireguard2/config/peer_${peer_name}.conf" ] && cp -f "security/wireguard2/config/peer_${peer_name}.conf" "$peer_conf" 2>/dev/null || true
+            [ -f "security/wireguard2/config/peers/${peer_name}.conf" ] && cp -f "security/wireguard2/config/peers/${peer_name}.conf" "$peer_conf" 2>/dev/null || true
+            [ -f "security/wireguard2/config/peers/${peer_name}/${peer_name}.conf" ] && cp -f "security/wireguard2/config/peers/${peer_name}/${peer_name}.conf" "$peer_conf" 2>/dev/null || true
+            [ -f "security/wireguard2/config/peers/${peer_name}.qr.png" ] && cp -f "security/wireguard2/config/peers/${peer_name}.qr.png" "$peer_qr_png" 2>/dev/null || true
+            [ -f "security/wireguard2/config/peers/${peer_name}/${peer_name}.qr.png" ] && cp -f "security/wireguard2/config/peers/${peer_name}/${peer_name}.qr.png" "$peer_qr_png" 2>/dev/null || true
+            [ -f "security/wireguard2/config/peers/${peer_name}.qr.txt" ] && cp -f "security/wireguard2/config/peers/${peer_name}.qr.txt" "$peer_qr_txt" 2>/dev/null || true
+            [ -f "security/wireguard2/config/peers/${peer_name}/${peer_name}.qr.txt" ] && cp -f "security/wireguard2/config/peers/${peer_name}/${peer_name}.qr.txt" "$peer_qr_txt" 2>/dev/null || true
 
             if [ ! -s "$peer_conf" ]; then
                 log_error "Peer ${peer_name} no generado: falta ${peer_conf}"
