@@ -321,6 +321,13 @@ def main() -> None:
                         user_id = zbx_request(zbx_url, "user.get", {"filter": {"username": zbx_user}, "output": ["userid"]}, auth)[0]["userid"]
                         zbx_request(zbx_url, "user.update", {"userid": user_id, "passwd": zbx_pass, "current_passwd": "zabbix"}, auth)
                         print("[ZABBIX-PROVISION] Contraseña de Admin actualizada")
+                        # Zabbix invalida la sesión actual al cambiar la contraseña, hay que volver a loguearse
+                        auth = zbx_request(
+                            zbx_url,
+                            "user.login",
+                            {"username": zbx_user, "password": zbx_pass},
+                            auth=None,
+                        )
                     except Exception as e:
                         print(f"[ZABBIX-PROVISION] No se pudo cambiar contraseña: {e}")
                 break
